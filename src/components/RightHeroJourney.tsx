@@ -25,7 +25,7 @@ export const RightHeroJourney: React.FC<RightHeroJourneyProps> = ({
       <div
         style={{
           position: 'absolute',
-          top: '0%',
+          top: '12%',
           left: '42%',
           zIndex: 30,
         }}
@@ -37,7 +37,7 @@ export const RightHeroJourney: React.FC<RightHeroJourneyProps> = ({
       <div
         style={{
           position: 'absolute',
-          top: '12%',
+          top: '37%',
           left: '12%',
           zIndex: 25,
           pointerEvents: 'none',
