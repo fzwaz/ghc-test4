@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
+import type { PageKey } from './Navbar';
 import { Send, MapPin, Mail, CheckCircle2, Shield } from 'lucide-react';
 
-export const Footer: React.FC = () => {
+export const Footer: React.FC<{ onNavigate?: (page: PageKey, anchor?: string) => void }> = ({ onNavigate }) => {
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
 
@@ -15,7 +16,7 @@ export const Footer: React.FC = () => {
 
   return (
     <footer
-      id="about"
+      id="contact"
       style={{
         backgroundColor: '#0c2220',
         color: '#e2e8f0',
@@ -58,35 +59,17 @@ export const Footer: React.FC = () => {
         >
           {/* Col 1: Brand Info */}
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
-              <span
+            <div style={{ display: 'inline-flex', alignItems: 'center', marginBottom: '16px' }}>
+              <img
+                src="/ghclogo.png"
+                alt="GHC Growth Lab"
                 style={{
-                  fontSize: '28px',
-                  fontWeight: '900',
-                  color: '#ffffff',
-                  letterSpacing: '-0.5px',
-                  lineHeight: '1',
+                  height: '44px',
+                  width: 'auto',
+                  objectFit: 'contain',
+                  display: 'block',
                 }}
-              >
-                GHC
-              </span>
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  borderLeft: '1.5px solid #2dd4bf',
-                  paddingLeft: '8px',
-                  height: '24px',
-                }}
-              >
-                <span style={{ fontSize: '11px', fontWeight: '700', lineHeight: '1.1', color: '#ccfbf1' }}>
-                  Growth
-                </span>
-                <span style={{ fontSize: '11px', fontWeight: '700', lineHeight: '1.1', color: '#ccfbf1' }}>
-                  Lab
-                </span>
-              </div>
+              />
             </div>
 
             <p
@@ -119,11 +102,11 @@ export const Footer: React.FC = () => {
               Services
             </h4>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '11px', fontSize: '13.5px' }}>
-              <li><a href="#services" style={{ color: '#94a3b8', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => (e.currentTarget.style.color = '#2dd4bf')} onMouseLeave={(e) => (e.currentTarget.style.color = '#94a3b8')}>Investment Banking</a></li>
-              <li><a href="#services" style={{ color: '#94a3b8', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => (e.currentTarget.style.color = '#2dd4bf')} onMouseLeave={(e) => (e.currentTarget.style.color = '#94a3b8')}>Valuation & Due Diligence</a></li>
-              <li><a href="#services" style={{ color: '#94a3b8', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => (e.currentTarget.style.color = '#2dd4bf')} onMouseLeave={(e) => (e.currentTarget.style.color = '#94a3b8')}>Entity Setup & DPIIT</a></li>
-              <li><a href="#services" style={{ color: '#94a3b8', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => (e.currentTarget.style.color = '#2dd4bf')} onMouseLeave={(e) => (e.currentTarget.style.color = '#94a3b8')}>Tax Exemption (80-IAC)</a></li>
-              <li><a href="#services" style={{ color: '#94a3b8', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => (e.currentTarget.style.color = '#2dd4bf')} onMouseLeave={(e) => (e.currentTarget.style.color = '#94a3b8')}>M&A & Secondary Sales</a></li>
+              <li><a href="#services" onClick={(e) => { e.preventDefault(); onNavigate?.('services'); }} style={{ color: '#94a3b8', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => (e.currentTarget.style.color = '#2dd4bf')} onMouseLeave={(e) => (e.currentTarget.style.color = '#94a3b8')}>Investment Banking</a></li>
+              <li><a href="#services" onClick={(e) => { e.preventDefault(); onNavigate?.('services'); }} style={{ color: '#94a3b8', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => (e.currentTarget.style.color = '#2dd4bf')} onMouseLeave={(e) => (e.currentTarget.style.color = '#94a3b8')}>Valuation & Due Diligence</a></li>
+              <li><a href="#services" onClick={(e) => { e.preventDefault(); onNavigate?.('services'); }} style={{ color: '#94a3b8', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => (e.currentTarget.style.color = '#2dd4bf')} onMouseLeave={(e) => (e.currentTarget.style.color = '#94a3b8')}>Entity Setup & DPIIT</a></li>
+              <li><a href="#services" onClick={(e) => { e.preventDefault(); onNavigate?.('services'); }} style={{ color: '#94a3b8', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => (e.currentTarget.style.color = '#2dd4bf')} onMouseLeave={(e) => (e.currentTarget.style.color = '#94a3b8')}>Tax Exemption (80-IAC)</a></li>
+              <li><a href="#services" onClick={(e) => { e.preventDefault(); onNavigate?.('services'); }} style={{ color: '#94a3b8', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => (e.currentTarget.style.color = '#2dd4bf')} onMouseLeave={(e) => (e.currentTarget.style.color = '#94a3b8')}>M&A & Secondary Sales</a></li>
             </ul>
           </div>
 
@@ -133,11 +116,11 @@ export const Footer: React.FC = () => {
               Programs
             </h4>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '11px', fontSize: '13.5px' }}>
-              <li><a href="#framework" style={{ color: '#94a3b8', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => (e.currentTarget.style.color = '#2dd4bf')} onMouseLeave={(e) => (e.currentTarget.style.color = '#94a3b8')}>Incubate (0 to 1)</a></li>
-              <li><a href="#framework" style={{ color: '#94a3b8', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => (e.currentTarget.style.color = '#2dd4bf')} onMouseLeave={(e) => (e.currentTarget.style.color = '#94a3b8')}>Accelerate (1 to 10)</a></li>
-              <li><a href="#mentors" style={{ color: '#94a3b8', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => (e.currentTarget.style.color = '#2dd4bf')} onMouseLeave={(e) => (e.currentTarget.style.color = '#94a3b8')}>1-on-1 Mentor Network</a></li>
-              <li><a href="#framework" style={{ color: '#94a3b8', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => (e.currentTarget.style.color = '#2dd4bf')} onMouseLeave={(e) => (e.currentTarget.style.color = '#94a3b8')}>Series A Syndicate</a></li>
-              <li><a href="#framework" style={{ color: '#94a3b8', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => (e.currentTarget.style.color = '#2dd4bf')} onMouseLeave={(e) => (e.currentTarget.style.color = '#94a3b8')}>Global Expansion Track</a></li>
+              <li><a href="#programs" onClick={(e) => { e.preventDefault(); onNavigate?.('programs'); }} style={{ color: '#94a3b8', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => (e.currentTarget.style.color = '#2dd4bf')} onMouseLeave={(e) => (e.currentTarget.style.color = '#94a3b8')}>Incubate (0 to 1)</a></li>
+              <li><a href="#programs" onClick={(e) => { e.preventDefault(); onNavigate?.('programs'); }} style={{ color: '#94a3b8', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => (e.currentTarget.style.color = '#2dd4bf')} onMouseLeave={(e) => (e.currentTarget.style.color = '#94a3b8')}>Accelerate (1 to 10)</a></li>
+              <li><a href="#mentors" onClick={(e) => { e.preventDefault(); onNavigate?.('mentors'); }} style={{ color: '#94a3b8', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => (e.currentTarget.style.color = '#2dd4bf')} onMouseLeave={(e) => (e.currentTarget.style.color = '#94a3b8')}>1-on-1 Mentor Network</a></li>
+              <li><a href="#programs" onClick={(e) => { e.preventDefault(); onNavigate?.('programs'); }} style={{ color: '#94a3b8', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => (e.currentTarget.style.color = '#2dd4bf')} onMouseLeave={(e) => (e.currentTarget.style.color = '#94a3b8')}>Series A Syndicate</a></li>
+              <li><a href="#programs" onClick={(e) => { e.preventDefault(); onNavigate?.('programs'); }} style={{ color: '#94a3b8', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => (e.currentTarget.style.color = '#2dd4bf')} onMouseLeave={(e) => (e.currentTarget.style.color = '#94a3b8')}>Global Expansion Track</a></li>
             </ul>
           </div>
 
@@ -147,11 +130,11 @@ export const Footer: React.FC = () => {
               Knowledge Vault
             </h4>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '11px', fontSize: '13.5px' }}>
-              <li><a href="#resources" style={{ color: '#94a3b8', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => (e.currentTarget.style.color = '#2dd4bf')} onMouseLeave={(e) => (e.currentTarget.style.color = '#94a3b8')}>Financial Models</a></li>
-              <li><a href="#resources" style={{ color: '#94a3b8', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => (e.currentTarget.style.color = '#2dd4bf')} onMouseLeave={(e) => (e.currentTarget.style.color = '#94a3b8')}>Pitch Deck Frameworks</a></li>
-              <li><a href="#resources" style={{ color: '#94a3b8', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => (e.currentTarget.style.color = '#2dd4bf')} onMouseLeave={(e) => (e.currentTarget.style.color = '#94a3b8')}>KSUM Grant Roadmap</a></li>
-              <li><a href="#resources" style={{ color: '#94a3b8', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => (e.currentTarget.style.color = '#2dd4bf')} onMouseLeave={(e) => (e.currentTarget.style.color = '#94a3b8')}>Cap Table Simulator</a></li>
-              <li><a href="#resources" style={{ color: '#94a3b8', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => (e.currentTarget.style.color = '#2dd4bf')} onMouseLeave={(e) => (e.currentTarget.style.color = '#94a3b8')}>Term Sheet Glossary</a></li>
+              <li><a href="#resources" onClick={(e) => { e.preventDefault(); onNavigate?.('resources'); }} style={{ color: '#94a3b8', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => (e.currentTarget.style.color = '#2dd4bf')} onMouseLeave={(e) => (e.currentTarget.style.color = '#94a3b8')}>Financial Models</a></li>
+              <li><a href="#resources" onClick={(e) => { e.preventDefault(); onNavigate?.('resources'); }} style={{ color: '#94a3b8', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => (e.currentTarget.style.color = '#2dd4bf')} onMouseLeave={(e) => (e.currentTarget.style.color = '#94a3b8')}>Pitch Deck Frameworks</a></li>
+              <li><a href="#resources" onClick={(e) => { e.preventDefault(); onNavigate?.('resources'); }} style={{ color: '#94a3b8', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => (e.currentTarget.style.color = '#2dd4bf')} onMouseLeave={(e) => (e.currentTarget.style.color = '#94a3b8')}>KSUM Grant Roadmap</a></li>
+              <li><a href="#resources" onClick={(e) => { e.preventDefault(); onNavigate?.('resources'); }} style={{ color: '#94a3b8', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => (e.currentTarget.style.color = '#2dd4bf')} onMouseLeave={(e) => (e.currentTarget.style.color = '#94a3b8')}>Cap Table Simulator</a></li>
+              <li><a href="#resources" onClick={(e) => { e.preventDefault(); onNavigate?.('resources'); }} style={{ color: '#94a3b8', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => (e.currentTarget.style.color = '#2dd4bf')} onMouseLeave={(e) => (e.currentTarget.style.color = '#94a3b8')}>Term Sheet Glossary</a></li>
             </ul>
           </div>
 

@@ -1,12 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronDown, ArrowRight, Menu, X, Sparkles, Award, ShieldCheck, Briefcase } from 'lucide-react';
 
+export type PageKey = 'home' | 'about' | 'services' | 'mentors' | 'programs' | 'resources';
+
 interface NavbarProps {
   onGetStartedClick?: () => void;
   onLoginClick?: () => void;
+  onNavigate?: (page: PageKey, anchor?: string) => void;
+  activePage?: PageKey;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ onGetStartedClick, onLoginClick }) => {
+const NavItem: React.FC<{ active: boolean; onClick: () => void; children: React.ReactNode }> = ({ active, onClick, children }) => (
+  <button
+    onClick={onClick}
+    style={{
+      fontSize: '14.5px',
+      fontWeight: '600',
+      color: active ? '#125651' : '#334155',
+      background: 'none',
+      border: 'none',
+      borderBottom: active ? '2px solid #125651' : '2px solid transparent',
+      paddingBottom: '2px',
+      cursor: 'pointer',
+      fontFamily: 'inherit',
+      transition: 'color 0.2s ease',
+    }}
+    onMouseEnter={(e) => (e.currentTarget.style.color = '#125651')}
+    onMouseLeave={(e) => (e.currentTarget.style.color = active ? '#125651' : '#334155')}
+  >
+    {children}
+  </button>
+);
+
+export const Navbar: React.FC<NavbarProps> = ({ onGetStartedClick, onLoginClick, onNavigate, activePage = 'home' }) => {
   const [isServicesOpen, setIsServicesOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -23,19 +49,21 @@ export const Navbar: React.FC<NavbarProps> = ({ onGetStartedClick, onLoginClick 
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const servicesList = [
-    { title: 'Fundraising & Investment Banking', desc: 'Debt & equity funding, investor readiness', icon: Sparkles, id: '#services' },
-    { title: '1-on-1 Mentorship', desc: 'Personalized guidance from top venture leaders', icon: Award, id: '#mentors' },
-    { title: 'Company Setup & Registration', desc: 'Startup India, KSUM, compliance & tax', icon: ShieldCheck, id: '#services' },
-    { title: 'Growth & Scaling Strategy', desc: 'Financial modeling, process automation', icon: Briefcase, id: '#services' },
+  const servicesList: { title: string; desc: string; icon: React.ElementType; page: PageKey; anchor?: string }[] = [
+    { title: 'Fundraising & Investment Banking', desc: 'Debt & equity funding, investor readiness', icon: Sparkles, page: 'services', anchor: 'service-funding' },
+    { title: '1-on-1 Mentorship', desc: 'Personalized guidance from top venture leaders', icon: Award, page: 'mentors' },
+    { title: 'Company Setup & Registration', desc: 'Startup India, KSUM, compliance & tax', icon: ShieldCheck, page: 'services', anchor: 'service-setup' },
+    { title: 'Growth & Scaling Strategy', desc: 'Financial modeling, process automation', icon: Briefcase, page: 'services', anchor: 'service-growth' },
   ];
 
   return (
     <div
       style={{
-        position: 'sticky',
+        position: 'fixed',
         top: '12px',
-        zIndex: 100,
+        left: 0,
+        right: 0,
+        zIndex: 1000,
         width: '100%',
         padding: '0 24px',
         pointerEvents: 'none',
@@ -65,59 +93,25 @@ export const Navbar: React.FC<NavbarProps> = ({ onGetStartedClick, onLoginClick 
         {/* Brand Logo */}
         <a
           href="#"
+          onClick={(e) => { e.preventDefault(); onNavigate?.('home'); }}
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '8px',
             textDecoration: 'none',
             color: 'inherit',
+            cursor: 'pointer',
           }}
         >
-          <span
+          <img
+            src="/GrowthLab-logo.png"
+            alt="GHC Growth Lab"
             style={{
-              fontSize: '26px',
-              fontWeight: '900',
-              letterSpacing: '-0.5px',
-              color: '#111827',
-              lineHeight: '1',
-              fontFamily: 'var(--font-sans)',
+              height: '36px',
+              width: 'auto',
+              objectFit: 'contain',
+              display: 'block',
             }}
-          >
-            GHC
-          </span>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              borderLeft: '1.5px solid #cbd5e1',
-              paddingLeft: '8px',
-              height: '22px',
-            }}
-          >
-            <span
-              style={{
-                fontSize: '10.5px',
-                fontWeight: '700',
-                lineHeight: '1.1',
-                color: '#475569',
-                letterSpacing: '0.2px',
-              }}
-            >
-              Growth
-            </span>
-            <span
-              style={{
-                fontSize: '10.5px',
-                fontWeight: '700',
-                lineHeight: '1.1',
-                color: '#475569',
-                letterSpacing: '0.2px',
-              }}
-            >
-              Lab
-            </span>
-          </div>
+          />
         </a>
 
         {/* Center Navigation Links (Desktop) */}
@@ -137,6 +131,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onGetStartedClick, onLoginClick 
           >
             <a
               href="#services"
+              onClick={(e) => { e.preventDefault(); onNavigate?.('services'); }}
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -185,8 +180,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onGetStartedClick, onLoginClick 
                 {servicesList.map((item, idx) => (
                   <a
                     key={idx}
-                    href={item.id}
-                    onClick={() => setIsServicesOpen(false)}
+                    href="#"
+                    onClick={(e) => { e.preventDefault(); setIsServicesOpen(false); onNavigate?.(item.page, item.anchor); }}
                     style={{
                       display: 'flex',
                       alignItems: 'flex-start',
@@ -231,65 +226,21 @@ export const Navbar: React.FC<NavbarProps> = ({ onGetStartedClick, onLoginClick 
             )}
           </div>
 
-          <a
-            href="#mentors"
-            style={{
-              fontSize: '14.5px',
-              fontWeight: '600',
-              color: '#334155',
-              textDecoration: 'none',
-              transition: 'color 0.2s ease',
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = '#125651')}
-            onMouseLeave={(e) => (e.currentTarget.style.color = '#334155')}
-          >
+          <NavItem active={activePage === 'mentors'} onClick={() => onNavigate?.('mentors')}>
             Mentors
-          </a>
+          </NavItem>
 
-          <a
-            href="#framework"
-            style={{
-              fontSize: '14.5px',
-              fontWeight: '600',
-              color: '#334155',
-              textDecoration: 'none',
-              transition: 'color 0.2s ease',
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = '#125651')}
-            onMouseLeave={(e) => (e.currentTarget.style.color = '#334155')}
-          >
+          <NavItem active={activePage === 'programs'} onClick={() => onNavigate?.('programs')}>
             Programs
-          </a>
+          </NavItem>
 
-          <a
-            href="#resources"
-            style={{
-              fontSize: '14.5px',
-              fontWeight: '600',
-              color: '#334155',
-              textDecoration: 'none',
-              transition: 'color 0.2s ease',
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = '#125651')}
-            onMouseLeave={(e) => (e.currentTarget.style.color = '#334155')}
-          >
+          <NavItem active={activePage === 'resources'} onClick={() => onNavigate?.('resources')}>
             Resources
-          </a>
+          </NavItem>
 
-          <a
-            href="#about"
-            style={{
-              fontSize: '14.5px',
-              fontWeight: '600',
-              color: '#334155',
-              textDecoration: 'none',
-              transition: 'color 0.2s ease',
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = '#125651')}
-            onMouseLeave={(e) => (e.currentTarget.style.color = '#334155')}
-          >
+          <NavItem active={activePage === 'about'} onClick={() => onNavigate?.('about')}>
             About
-          </a>
+          </NavItem>
         </nav>
 
         {/* Right Actions */}
@@ -367,11 +318,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onGetStartedClick, onLoginClick 
             boxShadow: '0 20px 40px -10px rgba(18, 86, 81, 0.16)',
           }}
         >
-          <a href="#services" onClick={() => setMobileMenuOpen(false)} style={{ textDecoration: 'none', color: '#1e293b', fontWeight: '600', fontSize: '15px' }}>Services</a>
-          <a href="#mentors" onClick={() => setMobileMenuOpen(false)} style={{ textDecoration: 'none', color: '#1e293b', fontWeight: '600', fontSize: '15px' }}>Mentors</a>
-          <a href="#framework" onClick={() => setMobileMenuOpen(false)} style={{ textDecoration: 'none', color: '#1e293b', fontWeight: '600', fontSize: '15px' }}>Programs</a>
-          <a href="#resources" onClick={() => setMobileMenuOpen(false)} style={{ textDecoration: 'none', color: '#1e293b', fontWeight: '600', fontSize: '15px' }}>Resources</a>
-          <a href="#about" onClick={() => setMobileMenuOpen(false)} style={{ textDecoration: 'none', color: '#1e293b', fontWeight: '600', fontSize: '15px' }}>About</a>
+          <a href="#services" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate?.('services'); }} style={{ textDecoration: 'none', color: '#1e293b', fontWeight: '600', fontSize: '15px' }}>Services</a>
+          <a href="#mentors" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate?.('mentors'); }} style={{ textDecoration: 'none', color: activePage === 'mentors' ? '#125651' : '#1e293b', fontWeight: '600', fontSize: '15px' }}>Mentors</a>
+          <a href="#programs" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate?.('programs'); }} style={{ textDecoration: 'none', color: activePage === 'programs' ? '#125651' : '#1e293b', fontWeight: '600', fontSize: '15px' }}>Programs</a>
+          <a href="#resources" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate?.('resources'); }} style={{ textDecoration: 'none', color: activePage === 'resources' ? '#125651' : '#1e293b', fontWeight: '600', fontSize: '15px' }}>Resources</a>
+          <a href="#about" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate?.('about'); }} style={{ textDecoration: 'none', color: activePage === 'about' ? '#125651' : '#1e293b', fontWeight: '600', fontSize: '15px' }}>About</a>
           <hr style={{ borderColor: '#e2e8f0', borderStyle: 'solid', borderWidth: '0.5px' }} />
           <button
             onClick={() => { setMobileMenuOpen(false); onLoginClick?.(); }}

@@ -1,51 +1,32 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { ArrowRight } from 'lucide-react';
 import { RightHeroJourney } from './RightHeroJourney';
 import { StatsSection } from './StatsSection';
-import { ContactModal } from './ContactModal';
 
 interface HeroProps {
   onStartJourney?: () => void;
   onTalkToTeam?: () => void;
+  onMilestoneClick?: (title: string) => void;
+  onMentorClick?: () => void;
 }
 
-export const Hero: React.FC<HeroProps> = ({ onStartJourney, onTalkToTeam }) => {
-  const [modalOpen, setModalOpen] = useState(false);
-  const [modalTopic, setModalTopic] = useState('Growth Advisory');
-
-  const handleMilestoneClick = (title: string) => {
-    setModalTopic(`${title} Stage Advisory`);
-    setModalOpen(true);
-  };
-
-  const handleStart = () => {
-    if (onStartJourney) {
-      onStartJourney();
-    } else {
-      setModalTopic('Start Growth Journey');
-      setModalOpen(true);
-    }
-  };
-
-  const handleTalk = () => {
-    if (onTalkToTeam) {
-      onTalkToTeam();
-    } else {
-      setModalTopic('Talk to Strategy Team');
-      setModalOpen(true);
-    }
-  };
+export const Hero: React.FC<HeroProps> = ({
+  onStartJourney,
+  onTalkToTeam,
+  onMilestoneClick,
+  onMentorClick,
+}) => {
 
   return (
     <section
       style={{
         position: 'relative',
         width: '100%',
-        minHeight: 'calc(100vh - 75px)',
+        minHeight: '100vh',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-        padding: '10px 48px 36px 48px',
+        padding: '122px 48px 20px 48px',
         maxWidth: '1440px',
         margin: '0 auto',
         overflow: 'hidden',
@@ -69,7 +50,7 @@ export const Hero: React.FC<HeroProps> = ({ onStartJourney, onTalkToTeam }) => {
         style={{
           position: 'absolute',
           inset: 0,
-          background: 'linear-gradient(90deg, rgba(247, 250, 249, 0.96) 0%, rgba(247, 250, 249, 0.90) 36%, rgba(247, 250, 249, 0.25) 58%, rgba(247, 250, 249, 0.0) 100%)',
+          background: 'linear-gradient(90deg, rgba(247, 250, 249, 0.88) 0%, rgba(247, 250, 249, 0.72) 32%, rgba(247, 250, 249, 0.18) 55%, rgba(247, 250, 249, 0.0) 100%)',
           zIndex: 1,
           pointerEvents: 'none',
         }}
@@ -166,7 +147,7 @@ export const Hero: React.FC<HeroProps> = ({ onStartJourney, onTalkToTeam }) => {
             }}
           >
             <button
-              onClick={handleStart}
+              onClick={onStartJourney}
               className="btn-primary"
               style={{
                 padding: '13px 24px',
@@ -178,7 +159,7 @@ export const Hero: React.FC<HeroProps> = ({ onStartJourney, onTalkToTeam }) => {
             </button>
 
             <button
-              onClick={handleTalk}
+              onClick={onTalkToTeam}
               className="btn-secondary"
               style={{
                 padding: '12px 22px',
@@ -205,21 +186,11 @@ export const Hero: React.FC<HeroProps> = ({ onStartJourney, onTalkToTeam }) => {
           }}
         >
           <RightHeroJourney
-            onMilestoneClick={handleMilestoneClick}
-            onMentorClick={() => {
-              setModalTopic('Mentor Network');
-              setModalOpen(true);
-            }}
+            onMilestoneClick={(title) => onMilestoneClick?.(title)}
+            onMentorClick={() => onMentorClick?.()}
           />
         </div>
       </div>
-
-      {/* Modal Dialog */}
-      <ContactModal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        defaultTopic={modalTopic}
-      />
 
       {/* Responsive Styles */}
       <style>{`

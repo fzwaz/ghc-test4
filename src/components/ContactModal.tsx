@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, CheckCircle2, Sparkles, Send, ArrowRight } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -20,7 +20,13 @@ export const ContactModal: React.FC<ContactModalProps> = ({
   const [stage, setStage] = useState('Idea Stage');
   const [submitted, setSubmitted] = useState(false);
 
-  if (!isOpen) return null;
+  // Reset success state whenever a fresh modal is opened or the topic/mode changes,
+  // otherwise a previous submission persists across different CTA entry points.
+  useEffect(() => {
+    if (isOpen) {
+      setSubmitted(false);
+    }
+  }, [isOpen, defaultTopic, isLogin]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,6 +43,8 @@ export const ContactModal: React.FC<ContactModalProps> = ({
     setSubmitted(false);
     onClose();
   };
+
+  if (!isOpen) return null;
 
   return (
     <div

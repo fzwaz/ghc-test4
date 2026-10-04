@@ -82,7 +82,7 @@ export const HowWeHelp: React.FC<HowWeHelpProps> = ({
         position: 'relative',
         width: '100%',
         backgroundColor: '#ffffff',
-        padding: '80px 48px 90px 48px',
+        padding: '44px 48px 90px 48px',
         overflow: 'hidden',
         borderTop: '1px solid rgba(226, 232, 240, 0.6)',
       }}
