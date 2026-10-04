@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import DotField from '../components/DotField';
 import { ArrowRight, Check, Coins, Users, FileCheck2, BarChart3, CheckCircle2, ChevronDown } from 'lucide-react';
 import { CtaBanner } from '../components/CtaBanner';
+import { InsightsSection } from '../components/InsightsSection';
 
 interface ServicesPageProps {
   onSelectService?: (serviceName: string) => void;
+  onReadArticle?: () => void;
+  onReserveSeat?: (eventTitle: string) => void;
 }
 
 const trustPoints = [
@@ -175,11 +177,11 @@ const services = [
   },
 ];
 
-export const ServicesPage: React.FC<ServicesPageProps> = ({ onSelectService }) => {
+export const ServicesPage: React.FC<ServicesPageProps> = ({ onSelectService, onReadArticle, onReserveSeat }) => {
   return (
     <>
       {/* Hero — grid backdrop, headline left, request card right */}
-      <section style={{ position: 'relative', width: '100%', backgroundColor: '#ffffff', overflow: 'hidden' }}>
+      <section data-hero style={{ position: 'relative', width: '100%', backgroundColor: '#ffffff', overflow: 'hidden' }}>
         <div
           style={{
             position: 'absolute', inset: 0, pointerEvents: 'none',
@@ -189,10 +191,6 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onSelectService }) =
             WebkitMaskImage: 'radial-gradient(ellipse 130% 110% at 50% 42%, black 62%, transparent 100%)',
           }}
         />
-        <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
-          <DotField dotRadius={1.5} dotSpacing={14} bulgeStrength={67} glowRadius={160} sparkle={false} waveAmplitude={0} />
-        </div>
-
         <div style={{ position: 'relative', zIndex: 2, maxWidth: '1380px', margin: '0 auto', padding: '130px 48px 56px 48px' }}>
           <div className="services-hero-grid" style={{ display: 'grid', gridTemplateColumns: '1.15fr 0.85fr', gap: '64px', alignItems: 'center', marginBottom: '32px' }}>
             <div>
@@ -288,6 +286,7 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({ onSelectService }) =
         <style>{`@media (max-width: 900px) { .service-row { grid-template-columns: 1fr !important; } }`}</style>
       </section>
 
+      <InsightsSection onReadArticle={onReadArticle} onReserveSeat={onReserveSeat} />
       <CtaBanner />
     </>
   );

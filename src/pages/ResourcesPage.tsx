@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import DotField from '../components/DotField';
 import {
   Download,
   FileSpreadsheet,
@@ -11,7 +10,16 @@ import {
   Search,
   Share2,
   X,
-  FileDown
+  FileDown,
+  BarChart3,
+  PieChart,
+  ShieldCheck,
+  Landmark,
+  SlidersHorizontal,
+  Users,
+  Rocket,
+  UserCheck,
+  Building2,
 } from 'lucide-react';
 import { InsightsSection } from '../components/InsightsSection';
 import { CtaBanner } from '../components/CtaBanner';
@@ -19,6 +27,7 @@ import { CtaBanner } from '../components/CtaBanner';
 interface ResourcesPageProps {
   onReadArticle?: () => void;
   onTalkToTeam?: () => void;
+  onReserveSeat?: (eventTitle: string) => void;
 }
 
 const trustPoints = [
@@ -267,78 +276,106 @@ const realTemplateSuites: TemplateSuite[] = [
 ];
 
 // Summary Feature blocks
-const whatYouFindItems = [
+const overviewRowStrips = [
   {
-    no: '01',
-    title: 'Startup Valuation Models',
-    desc: 'DCF, VC Method, First Chicago, Berkus & Scorecard models.',
+    number: '01',
+    title: "What You'll Find",
+    desc: 'Curated templates and models built by finance professionals and legal experts.',
+    wedgeBg: 'linear-gradient(135deg, #dcf5ed 0%, #e8f9f3 100%)',
+    numColor: '#0d9488',
+    iconBg: '#e6f7f2',
+    iconColor: '#0d9488',
+    items: [
+      {
+        title: 'Startup Valuation Models',
+        desc: 'DCF, VC Method, First Chicago, Berkus & Scorecard models.',
+        icon: FileText,
+      },
+      {
+        title: 'Legal Drafting & Agreements',
+        desc: 'Standard Term Sheets, SSA, SHA, SPA and mutual NDAs.',
+        icon: FileText,
+      },
+      {
+        title: 'Industry MIS Templates',
+        desc: 'Tailored monthly MIS reporting for SaaS, D2C & Manufacturing.',
+        icon: BarChart3,
+      },
+      {
+        title: 'Metrics & Cash Runway',
+        desc: 'Dynamic CLTV vs CAC payback and 36-month burn multiple planner.',
+        icon: PieChart,
+      },
+    ],
   },
   {
-    no: '02',
-    title: 'Legal Drafting & Agreements',
-    desc: 'Standard Term Sheets, SSA, SHA, SPA and mutual NDAs.',
+    number: '02',
+    title: 'Why These Templates',
+    desc: 'Engineered for maximum investor clarity, legal compliance and analytical precision.',
+    wedgeBg: 'linear-gradient(135deg, #e0f2fe 0%, #eef8ff 100%)',
+    numColor: '#0284c7',
+    iconBg: '#e0f2fe',
+    iconColor: '#0284c7',
+    items: [
+      {
+        title: 'Real-World Tested',
+        desc: 'Battle-tested across $50M+ closed venture and M&A transactions.',
+        icon: ShieldCheck,
+      },
+      {
+        title: 'Built by Investment Bankers',
+        desc: 'Crafted by institutional finance analysts and venture operators.',
+        icon: Landmark,
+      },
+      {
+        title: 'Fully Customizable',
+        desc: 'Open Excel (.xlsx) with formulas and standardized PDF drafts.',
+        icon: SlidersHorizontal,
+      },
+      {
+        title: 'Tier-1 VC & Angel Ready',
+        desc: 'Format expected by top venture funds, syndicates and angels.',
+        icon: Layers,
+      },
+    ],
   },
   {
-    no: '03',
-    title: 'Industry MIS Templates',
-    desc: 'Tailored monthly MIS reporting for SaaS, D2C & Manufacturing.',
-  },
-  {
-    no: '04',
-    title: 'Metrics & Cash Runway',
-    desc: 'Dynamic CLTV vs CAC payback and 36-month burn multiple planner.',
-  },
-];
-
-const whyTheseItems = [
-  {
-    no: '01',
-    title: 'Real-World Tested',
-    desc: 'Battle-tested across $50M+ closed venture and M&A transactions.',
-  },
-  {
-    no: '02',
-    title: 'Built by Investment Bankers',
-    desc: 'Crafted by institutional finance analysts and venture operators.',
-  },
-  {
-    no: '03',
-    title: 'Fully Customizable',
-    desc: 'Open Excel (.xlsx) with formulas and standardized PDF drafts.',
-  },
-  {
-    no: '04',
-    title: 'Tier-1 VC & Angel Ready',
-    desc: 'Format expected by top venture funds, syndicates and angels.',
-  },
-];
-
-const whoThisIsForItems = [
-  {
-    no: '01',
-    title: 'Early-Stage & Seed Founders',
-    desc: 'Establishing initial valuations, term sheets and clean governance.',
-  },
-  {
-    no: '02',
-    title: 'Growth Startups & Scaleups',
-    desc: 'Institutional Series A/B financial reporting & cash runway tracking.',
-  },
-  {
-    no: '03',
-    title: 'Fractional CFOs & Advisors',
-    desc: 'Standardizing client financial models and monthly MIS reporting.',
-  },
-  {
-    no: '04',
-    title: 'Accelerators & Incubators',
-    desc: 'Providing portfolio startups with investor-ready toolkits.',
+    number: '03',
+    title: 'Who This Is For',
+    desc: 'Standardized resources for every stakeholder in the venture ecosystem.',
+    wedgeBg: 'linear-gradient(135deg, #edf7e2 0%, #f4faed 100%)',
+    numColor: '#16a34a',
+    iconBg: '#ecf8e8',
+    iconColor: '#16a34a',
+    items: [
+      {
+        title: 'Early-Stage & Seed Founders',
+        desc: 'Establishing initial valuations, term sheets and clean governance.',
+        icon: Users,
+      },
+      {
+        title: 'Growth Startups & Scaleups',
+        desc: 'Institutional Series A/B financial reporting & cash runway tracking.',
+        icon: Rocket,
+      },
+      {
+        title: 'Fractional CFOs & Advisors',
+        desc: 'Standardizing client financial models and monthly MIS reporting.',
+        icon: UserCheck,
+      },
+      {
+        title: 'Accelerators & Incubators',
+        desc: 'Providing portfolio startups with investor-ready toolkits.',
+        icon: Building2,
+      },
+    ],
   },
 ];
 
 export const ResourcesPage: React.FC<ResourcesPageProps> = ({
   onReadArticle,
   onTalkToTeam,
+  onReserveSeat,
 }) => {
   const [activeCategory, setActiveCategory] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState('');
@@ -421,9 +458,14 @@ export const ResourcesPage: React.FC<ResourcesPageProps> = ({
     <>
       {/* 1. Hero — grid backdrop, headline left, download card right */}
       <section
+        data-hero
         style={{
           position: 'relative',
           width: '100%',
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
           backgroundColor: '#ffffff',
           overflow: 'hidden',
         }}
@@ -442,17 +484,15 @@ export const ResourcesPage: React.FC<ResourcesPageProps> = ({
               'radial-gradient(ellipse 130% 110% at 50% 42%, black 62%, transparent 100%)',
           }}
         />
-        <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
-          <DotField dotRadius={1.5} dotSpacing={14} bulgeStrength={67} glowRadius={160} sparkle={false} waveAmplitude={0} />
-        </div>
 
         <div
           style={{
             position: 'relative',
             zIndex: 2,
-            maxWidth: '1380px',
+            width: '100%',
+            maxWidth: '1440px',
             margin: '0 auto',
-            padding: '130px 48px 56px 48px',
+            padding: '122px 48px 20px 48px',
           }}
         >
           <div
@@ -628,234 +668,223 @@ export const ResourcesPage: React.FC<ResourcesPageProps> = ({
           width: '100%',
           backgroundColor: '#ffffff',
           borderBottom: '1px solid #edf2f0',
-          padding: '54px 48px 64px 48px',
+          padding: '48px 48px 56px 48px',
         }}
       >
         <div
           style={{
-            maxWidth: '1380px',
+            maxWidth: '1440px',
             margin: '0 auto',
             display: 'flex',
             flexDirection: 'column',
-            gap: '48px',
+            gap: '18px',
           }}
         >
-          {/* Row 1: What You'll Find */}
-          <div>
-            <div style={{ marginBottom: '22px' }}>
-              <h2
-                style={{
-                  fontSize: '22px',
-                  fontWeight: 800,
-                  color: '#0f172a',
-                  letterSpacing: '-0.02em',
-                  marginBottom: '4px',
-                }}
-              >
-                What You’ll Find
-              </h2>
-              <p style={{ fontSize: '14px', color: '#64748b' }}>
-                Curated templates and models built by finance professionals and legal experts.
-              </p>
-            </div>
+          {overviewRowStrips.map((strip, sIdx) => (
             <div
+              key={sIdx}
+              className="overview-strip-row"
               style={{
+                backgroundColor: '#ffffff',
+                border: '1px solid #e2ece8',
+                borderRadius: '20px',
+                overflow: 'hidden',
+                boxShadow: '0 2px 8px rgba(15, 23, 42, 0.03)',
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-                gap: '20px',
+                gridTemplateColumns: '275px 1fr auto',
+                alignItems: 'stretch',
+                transition: 'all 0.25s ease',
               }}
             >
-              {whatYouFindItems.map((item, idx) => (
-                <div
-                  key={idx}
+              {/* Left Wedge Banner with Slanted Divider */}
+              <div
+                className="overview-wedge-banner"
+                style={{
+                  background: strip.wedgeBg,
+                  clipPath: 'polygon(0 0, 100% 0, calc(100% - 24px) 100%, 0 100%)',
+                  padding: '24px 34px 24px 26px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                }}
+              >
+                <span
                   style={{
-                    backgroundColor: '#f8faf9',
-                    borderRadius: '16px',
-                    padding: '22px 20px',
-                    border: '1px solid #e5ece9',
-                    transition: 'all 0.2s ease',
+                    fontSize: '12.5px',
+                    fontWeight: 700,
+                    color: strip.numColor,
+                    fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
+                    marginBottom: '6px',
                   }}
                 >
-                  <span
-                    style={{
-                      fontSize: '12px',
-                      fontWeight: 800,
-                      color: '#1a7b74',
-                      fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
-                      display: 'block',
-                      marginBottom: '8px',
-                    }}
-                  >
-                    {item.no}
-                  </span>
-                  <h3
-                    style={{
-                      fontSize: '15.5px',
-                      fontWeight: 700,
-                      color: '#0f172a',
-                      marginBottom: '6px',
-                    }}
-                  >
-                    {item.title}
-                  </h3>
-                  <p
-                    style={{
-                      fontSize: '13px',
-                      color: '#64748b',
-                      lineHeight: 1.45,
-                    }}
-                  >
-                    {item.desc}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
+                  {strip.number}
+                </span>
+                <h2
+                  style={{
+                    fontSize: '20px',
+                    fontWeight: 800,
+                    color: '#0f172a',
+                    letterSpacing: '-0.02em',
+                    lineHeight: 1.2,
+                    marginBottom: '6px',
+                  }}
+                >
+                  {strip.title}
+                </h2>
+                <p
+                  style={{
+                    fontSize: '12px',
+                    color: '#475569',
+                    lineHeight: 1.45,
+                    maxWidth: '220px',
+                  }}
+                >
+                  {strip.desc}
+                </p>
+              </div>
 
-          {/* Row 2: Why These Templates */}
-          <div>
-            <div style={{ marginBottom: '22px' }}>
-              <h2
+              {/* Middle 4-item horizontal grid */}
+              <div
+                className="overview-strip-grid"
                 style={{
-                  fontSize: '22px',
-                  fontWeight: 800,
-                  color: '#0f172a',
-                  letterSpacing: '-0.02em',
-                  marginBottom: '4px',
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
+                  gap: '18px',
+                  padding: '20px 24px',
+                  alignItems: 'center',
                 }}
               >
-                Why These Templates
-              </h2>
-              <p style={{ fontSize: '14px', color: '#64748b' }}>
-                Engineered for maximum investor clarity, legal compliance and analytical precision.
-              </p>
-            </div>
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-                gap: '20px',
-              }}
-            >
-              {whyTheseItems.map((item, idx) => (
-                <div
-                  key={idx}
-                  style={{
-                    backgroundColor: '#f8faf9',
-                    borderRadius: '16px',
-                    padding: '22px 20px',
-                    border: '1px solid #e5ece9',
-                    transition: 'all 0.2s ease',
-                  }}
-                >
-                  <span
-                    style={{
-                      fontSize: '12px',
-                      fontWeight: 800,
-                      color: '#1a7b74',
-                      fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
-                      display: 'block',
-                      marginBottom: '8px',
-                    }}
-                  >
-                    {item.no}
-                  </span>
-                  <h3
-                    style={{
-                      fontSize: '15.5px',
-                      fontWeight: 700,
-                      color: '#0f172a',
-                      marginBottom: '6px',
-                    }}
-                  >
-                    {item.title}
-                  </h3>
-                  <p
-                    style={{
-                      fontSize: '13px',
-                      color: '#64748b',
-                      lineHeight: 1.45,
-                    }}
-                  >
-                    {item.desc}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
+                {strip.items.map((item, itemIdx) => {
+                  const ItemIcon = item.icon;
+                  return (
+                    <div
+                      key={itemIdx}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'flex-start',
+                        gap: '12px',
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: '40px',
+                          height: '40px',
+                          borderRadius: '11px',
+                          backgroundColor: strip.iconBg,
+                          color: strip.iconColor,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          flexShrink: 0,
+                          marginTop: '2px',
+                        }}
+                      >
+                        <ItemIcon size={19} strokeWidth={2.2} />
+                      </div>
+                      <div>
+                        <h3
+                          style={{
+                            fontSize: '13.5px',
+                            fontWeight: 700,
+                            color: '#0f172a',
+                            lineHeight: 1.35,
+                            marginBottom: '3px',
+                          }}
+                        >
+                          {item.title}
+                        </h3>
+                        <p
+                          style={{
+                            fontSize: '11.5px',
+                            color: '#64748b',
+                            lineHeight: 1.45,
+                          }}
+                        >
+                          {item.desc}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
 
-          {/* Row 3: Who This Is For */}
-          <div>
-            <div style={{ marginBottom: '22px' }}>
-              <h2
+              {/* Far-Right Circular Arrow Button */}
+              <div
+                className="overview-strip-arrow-wrapper"
                 style={{
-                  fontSize: '22px',
-                  fontWeight: 800,
-                  color: '#0f172a',
-                  letterSpacing: '-0.02em',
-                  marginBottom: '4px',
+                  paddingRight: '24px',
+                  paddingLeft: '10px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 }}
               >
-                Who This Is For
-              </h2>
-              <p style={{ fontSize: '14px', color: '#64748b' }}>
-                Standardized resources for every stakeholder in the venture ecosystem.
-              </p>
-            </div>
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-                gap: '20px',
-              }}
-            >
-              {whoThisIsForItems.map((item, idx) => (
-                <div
-                  key={idx}
+                <button
+                  onClick={() => {
+                    document.getElementById('available-templates')?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="strip-arrow-btn"
+                  title="Explore Templates"
                   style={{
-                    backgroundColor: '#f8faf9',
-                    borderRadius: '16px',
-                    padding: '22px 20px',
-                    border: '1px solid #e5ece9',
+                    width: '38px',
+                    height: '38px',
+                    borderRadius: '50%',
+                    border: '1.5px solid #cbd5e1',
+                    backgroundColor: '#ffffff',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#475569',
+                    cursor: 'pointer',
                     transition: 'all 0.2s ease',
                   }}
                 >
-                  <span
-                    style={{
-                      fontSize: '12px',
-                      fontWeight: 800,
-                      color: '#1a7b74',
-                      fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
-                      display: 'block',
-                      marginBottom: '8px',
-                    }}
-                  >
-                    {item.no}
-                  </span>
-                  <h3
-                    style={{
-                      fontSize: '15.5px',
-                      fontWeight: 700,
-                      color: '#0f172a',
-                      marginBottom: '6px',
-                    }}
-                  >
-                    {item.title}
-                  </h3>
-                  <p
-                    style={{
-                      fontSize: '13px',
-                      color: '#64748b',
-                      lineHeight: 1.45,
-                    }}
-                  >
-                    {item.desc}
-                  </p>
-                </div>
-              ))}
+                  <ArrowRight size={17} />
+                </button>
+              </div>
             </div>
-          </div>
+          ))}
         </div>
+
+        <style>{`
+          .overview-strip-row:hover {
+            box-shadow: 0 8px 24px -4px rgba(15, 23, 42, 0.08) !important;
+            border-color: #cbd5e1 !important;
+          }
+          .strip-arrow-btn:hover {
+            background-color: #0f172a !important;
+            border-color: #0f172a !important;
+            color: #ffffff !important;
+            transform: translateX(3px);
+          }
+          @media (max-width: 1280px) {
+            .overview-strip-row {
+              grid-template-columns: 240px 1fr auto !important;
+            }
+          }
+          @media (max-width: 1100px) {
+            .overview-strip-row {
+              grid-template-columns: 1fr !important;
+            }
+            .overview-wedge-banner {
+              clip-path: none !important;
+              padding: 20px 24px !important;
+            }
+            .overview-strip-grid {
+              grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+              gap: 20px !important;
+            }
+            .overview-strip-arrow-wrapper {
+              display: none !important;
+            }
+          }
+          @media (max-width: 640px) {
+            .overview-strip-grid {
+              grid-template-columns: 1fr !important;
+              gap: 16px !important;
+            }
+          }
+        `}</style>
       </section>
 
       {/* 3. Available Templates Section featuring the 4 Real Template Suites */}
@@ -1657,7 +1686,7 @@ export const ResourcesPage: React.FC<ResourcesPageProps> = ({
       `}</style>
 
       {/* 5. Insights Section */}
-      <InsightsSection onReadArticle={onReadArticle} />
+      <InsightsSection onReadArticle={onReadArticle} onReserveSeat={onReserveSeat} />
 
       {/* 6. Closing CTA */}
       <CtaBanner />

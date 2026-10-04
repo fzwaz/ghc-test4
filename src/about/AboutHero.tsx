@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import DotField from '../components/DotField';
 import { ArrowRight, CheckCircle2, ChevronDown } from 'lucide-react';
 
 const trustPoints = [
@@ -117,7 +116,7 @@ const AboutInquiryCard: React.FC = () => {
 
 export const AboutHero: React.FC = () => {
   return (
-    <section style={{ position: 'relative', width: '100%', backgroundColor: '#ffffff', overflow: 'hidden' }}>
+    <section data-hero style={{ position: 'relative', width: '100%', minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', backgroundColor: '#ffffff', overflow: 'hidden' }}>
       {/* Grid pattern background */}
       <div
         style={{
@@ -128,11 +127,7 @@ export const AboutHero: React.FC = () => {
           WebkitMaskImage: 'radial-gradient(ellipse 130% 110% at 50% 42%, black 62%, transparent 100%)',
         }}
       />
-      <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
-        <DotField dotRadius={1.5} dotSpacing={14} bulgeStrength={67} glowRadius={160} sparkle={false} waveAmplitude={0} />
-      </div>
-
-      <div style={{ position: 'relative', zIndex: 2, maxWidth: '1380px', margin: '0 auto', padding: '130px 48px 56px 48px' }}>
+      <div style={{ position: 'relative', zIndex: 2, width: '100%', maxWidth: '1440px', margin: '0 auto', padding: '122px 48px 20px 48px' }}>
         <div className="about-hero-grid" style={{ display: 'grid', gridTemplateColumns: '1.15fr 0.85fr', gap: '64px', alignItems: 'center', marginBottom: '32px' }}>
           <div>
             <div style={{ display: 'inline-flex', alignItems: 'center', backgroundColor: '#e6f4f1', color: '#1a7b74', padding: '6px 14px', borderRadius: '9999px', fontSize: '11px', fontWeight: 700, letterSpacing: '1.2px', textTransform: 'uppercase', marginBottom: '24px' }}>

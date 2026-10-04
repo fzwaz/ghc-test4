@@ -1,13 +1,25 @@
-import React, { useState } from 'react';
-import { ArrowRight, ArrowUpRight, Send, CheckCircle2, Presentation } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ArrowUpRight, Presentation, ChevronLeft, ChevronRight, CalendarDays, Ticket } from 'lucide-react';
+import { events } from '../data/events';
 
 interface InsightsSectionProps {
   onReadArticle?: () => void;
+  onReserveSeat?: (eventTitle: string) => void;
 }
 
-export const InsightsSection: React.FC<InsightsSectionProps> = ({ onReadArticle }) => {
-  const [email, setEmail] = useState('');
-  const [subscribed, setSubscribed] = useState(false);
+export const InsightsSection: React.FC<InsightsSectionProps> = ({ onReadArticle, onReserveSeat }) => {
+  const [eventIdx, setEventIdx] = useState(0);
+  const [paused, setPaused] = useState(false);
+
+  useEffect(() => {
+    if (paused || events.length < 2) return;
+    const timer = window.setInterval(() => {
+      setEventIdx((i) => (i + 1) % events.length);
+    }, 6000);
+    return () => window.clearInterval(timer);
+  }, [paused]);
+
+  const current = events.length > 0 ? events[eventIdx % events.length] : null;
 
   return (
     <section id="resources" style={{ width: '100%', backgroundColor: '#f7faf9', padding: '90px 48px 100px 48px', overflow: 'hidden' }}>
@@ -55,32 +67,79 @@ export const InsightsSection: React.FC<InsightsSectionProps> = ({ onReadArticle 
             </svg>
             <div style={{ position: 'absolute', top: '20px', left: '18px', width: '64px', height: '80px', backgroundImage: 'radial-gradient(rgba(26,123,116,0.5) 1.2px, transparent 1.6px)', backgroundSize: '16px 16px', pointerEvents: 'none', maskImage: 'radial-gradient(circle at 0% 0%, black 20%, transparent 75%)', WebkitMaskImage: 'radial-gradient(circle at 0% 0%, black 20%, transparent 75%)' }} />
             <div style={{ position: 'absolute', top: '-80px', right: '-60px', width: '260px', height: '200px', borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(26,123,116,0.35) 0%, rgba(26,123,116,0) 70%)', pointerEvents: 'none' }} />
-            <div style={{ position: 'relative', zIndex: 2, display: 'flex', flexDirection: 'column', justifyContent: 'center', flex: 1 }}>
-            <h3 style={{ fontSize: '24px', fontWeight: 800, color: '#fff', marginBottom: '10px' }}>Subscribe to our Newsletter</h3>
-            <p style={{ fontSize: '14.5px', color: '#ccfbf1', lineHeight: 1.6, marginBottom: '24px' }}>
-              Stay updated with latest trends and techniques in the world of entrepreneurship. Subscribe now!
-            </p>
-            {subscribed ? (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: 'rgba(255,255,255,0.14)', border: '1px solid rgba(255,255,255,0.25)', color: '#5eead4', padding: '12px 16px', borderRadius: '12px', fontSize: '14px', fontWeight: 600 }}>
-                <CheckCircle2 size={17} /> You're subscribed. Welcome aboard!
-              </div>
-            ) : (
-              <form onSubmit={(e) => { e.preventDefault(); if (email) setSubscribed(true); }} style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-                <input type="email" required placeholder="Enter Email" value={email} onChange={(e) => setEmail(e.target.value)}
-                  style={{ flex: '1 1 200px', backgroundColor: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.25)', borderRadius: '12px', padding: '13px 16px', color: '#fff', fontSize: '14px', outline: 'none' }} />
-                <button type="submit" style={{ backgroundColor: '#fff', color: '#125651', border: 'none', borderRadius: '12px', padding: '0 20px', minHeight: '48px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <Send size={15} /><span>Subscribe</span>
-                </button>
-              </form>
-            )}
-            <div style={{ marginTop: '22px', display: 'flex', alignItems: 'center', gap: '8px', color: '#99f6e4', fontSize: '12.5px', fontWeight: 600 }}>
-              <ArrowRight size={14} /> Join 5,000+ founders reading weekly
+            <div style={{ position: 'relative', zIndex: 2, display: 'flex', flexDirection: 'column', justifyContent: 'center', flex: 1 }}
+              onMouseEnter={() => setPaused(true)}
+              onMouseLeave={() => setPaused(false)}
+            >
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+              <span style={{ fontSize: '11px', fontWeight: 800, letterSpacing: '1.4px', color: '#125651', backgroundColor: '#e6f4f1', padding: '4px 10px', borderRadius: '6px' }}>
+                EVENTS
+              </span>
+              <span style={{ fontSize: '11.5px', fontWeight: 700, color: '#7d8f8c', letterSpacing: '1px' }}>
+                {events.length > 0 ? `${(eventIdx % events.length) + 1} / ${events.length}` : '0 / 0'}
+              </span>
             </div>
+            <h3 style={{ fontSize: '24px', fontWeight: 800, color: '#fff', marginBottom: '14px' }}>Ongoing & Upcoming Events</h3>
+            {current && (
+              <div style={{ minHeight: '148px' }}>
+                {current.status === 'ongoing' ? (
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '7px', fontSize: '11px', fontWeight: 800, letterSpacing: '1.6px', color: '#2dd4bf', backgroundColor: 'rgba(45,212,191,0.12)', border: '1px solid rgba(45,212,191,0.35)', padding: '5px 12px', borderRadius: '9999px', marginBottom: '12px' }}>
+                    <span className="event-pulse-dot" style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#2dd4bf' }} /> ONGOING NOW
+                  </span>
+                ) : (
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '7px', fontSize: '11px', fontWeight: 800, letterSpacing: '1.6px', color: '#99f6e4', backgroundColor: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.16)', padding: '5px 12px', borderRadius: '9999px', marginBottom: '12px' }}>
+                    <CalendarDays size={12} /> UPCOMING
+                  </span>
+                )}
+                <h4 style={{ fontSize: '18px', fontWeight: 800, color: '#fff', lineHeight: 1.35, marginBottom: '6px' }}>{current.title}</h4>
+                <p style={{ fontSize: '12.5px', fontWeight: 600, color: '#99f6e4', marginBottom: '8px' }}>{current.schedule} · {current.mode}</p>
+                <p style={{ fontSize: '13.5px', color: '#a7bcb8', lineHeight: 1.55 }}>{current.desc}</p>
+              </div>
+            )}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '16px', marginBottom: '16px' }}>
+              <button
+                aria-label="Previous event"
+                onClick={() => setEventIdx((i) => (i - 1 + events.length) % events.length)}
+                style={{ width: '34px', height: '34px', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.16)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+              >
+                <ChevronLeft size={16} />
+              </button>
+              <button
+                aria-label="Next event"
+                onClick={() => setEventIdx((i) => (i + 1) % events.length)}
+                style={{ width: '34px', height: '34px', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.16)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+              >
+                <ChevronRight size={16} />
+              </button>
+              <div style={{ display: 'flex', gap: '6px', marginLeft: '4px' }}>
+                {events.map((e, dotIdx) => (
+                  <button
+                    key={e.id}
+                    aria-label={`Go to event ${dotIdx + 1}`}
+                    onClick={() => setEventIdx(dotIdx)}
+                    style={{ width: dotIdx === eventIdx % events.length ? '22px' : '8px', height: '8px', borderRadius: '9999px', border: 'none', cursor: 'pointer', backgroundColor: dotIdx === eventIdx % events.length ? '#2dd4bf' : 'rgba(255,255,255,0.25)', transition: 'all 0.25s ease', padding: 0 }}
+                  />
+                ))}
+              </div>
+            </div>
+            <button
+              onClick={() => current && onReserveSeat?.(current.title)}
+              style={{ width: '100%', backgroundColor: '#fff', color: '#125651', border: 'none', borderRadius: '12px', padding: '15px', fontWeight: 700, fontSize: '16.5px', letterSpacing: '0.2px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}
+            >
+              <Ticket size={19} strokeWidth={2.2} /><span>Reserve a Seat</span>
+            </button>
             </div>
           </div>
         </div>
       </div>
-      <style>{`@media (max-width: 1100px) { .insights-grid { grid-template-columns: 1fr !important; } }`}</style>
+      <style>{`
+        @keyframes eventPulse {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(45,212,191,0.55); }
+          50% { box-shadow: 0 0 0 6px rgba(45,212,191,0); }
+        }
+        .event-pulse-dot { animation: eventPulse 1.8s ease-out infinite; }
+        @media (max-width: 1100px) { .insights-grid { grid-template-columns: 1fr !important; } }
+      `}</style>
     </section>
   );
 };

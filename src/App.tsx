@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { Navbar, type PageKey } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { WhatsNext } from './components/WhatsNext';
@@ -14,6 +15,7 @@ import { InsightsSection } from './components/InsightsSection';
 import { CtaBanner } from './components/CtaBanner';
 import { Footer } from './components/Footer';
 import { ContactModal } from './components/ContactModal';
+import CustomCursor from './components/CustomCursor';
 import { AboutPage } from './pages/AboutPage';
 import { ServicesPage } from './pages/ServicesPage';
 import { MentorsPage } from './pages/MentorsPage';
@@ -21,22 +23,53 @@ import { ProgramsPage } from './pages/ProgramsPage';
 import { ResourcesPage } from './pages/ResourcesPage';
 import { useGsapScroll } from './utils/useGsapScroll';
 
+const pageToPath = (page: PageKey): string => (page === 'home' ? '/' : `/${page}`);
+
+const pathToPage = (pathname: string): PageKey => {
+  const seg = pathname.replace(/^\/+|\/+$/g, '');
+  const pages: PageKey[] = ['about', 'services', 'mentors', 'programs', 'resources'];
+  return pages.includes(seg as PageKey) ? (seg as PageKey) : 'home';
+};
+
 export const App: React.FC = () => {
-  const [page, setPage] = useState<PageKey>('home');
+  const navigate = useNavigate();
+  const location = useLocation();
+  const page = pathToPage(location.pathname);
   const mainContainerRef = useGsapScroll(page);
   const [modalOpen, setModalOpen] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
   const [modalTopic, setModalTopic] = useState('Growth Advisory');
+  const [inHero, setInHero] = useState(false);
+  const inHeroRef = useRef(false);
+
+  // Custom cursor lives only inside hero sections.
+  useEffect(() => {
+    const onMove = (e: MouseEvent) => {
+      const el = document.elementFromPoint(e.clientX, e.clientY);
+      const inside = !!el?.closest?.('[data-hero]');
+      if (inside !== inHeroRef.current) {
+        inHeroRef.current = inside;
+        document.body.classList.toggle('in-hero', inside);
+        setInHero(inside);
+      }
+    };
+    window.addEventListener('mousemove', onMove, { passive: true });
+    return () => window.removeEventListener('mousemove', onMove);
+  }, []);
+
+  useEffect(() => {
+    const anchor = (location.state as { anchor?: string } | null)?.anchor;
+    if (anchor) {
+      const timer = window.setTimeout(() => {
+        document.getElementById(anchor)?.scrollIntoView({ behavior: 'smooth' });
+      }, 150);
+      return () => window.clearTimeout(timer);
+    }
+    window.scrollTo(0, 0);
+  }, [location]);
 
   const goPage = (next: PageKey, anchor?: string) => {
-    setPage(next);
-    window.setTimeout(() => {
-      if (anchor) {
-        document.getElementById(anchor)?.scrollIntoView({ behavior: 'smooth' });
-      } else {
-        window.scrollTo(0, 0);
-      }
-    }, 150);
+    navigate(pageToPath(next), anchor ? { state: { anchor } } : undefined);
   };
 
   const openTopic = (topic: string) => {
@@ -88,6 +121,16 @@ export const App: React.FC = () => {
         position: 'relative',
       }}
     >
+      <div className={inHero ? undefined : 'cc-paused'}>
+        <CustomCursor dotColor="#14b8a6" ringColor="rgba(20,184,166,0.4)" />
+      </div>
+      <style>{`
+        @media (hover: hover) and (pointer: fine) {
+          body.cc-cursor-on, body.cc-cursor-on a, body.cc-cursor-on button, body.cc-cursor-on [role="button"] { cursor: auto !important; }
+          body.in-hero, body.in-hero a, body.in-hero button, body.in-hero [role="button"] { cursor: none !important; }
+        }
+        .cc-paused .cc-dot, .cc-paused .cc-ring { display: none !important; }
+      `}</style>
       {/* 1. Floating Fixed Navbar — always visible */}
       <Navbar
         onGetStartedClick={handleGetStarted}
@@ -96,7 +139,8 @@ export const App: React.FC = () => {
         activePage={page}
       />
       <main ref={mainContainerRef} style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-        {page === 'home' ? (
+        <Routes>
+          <Route path="/" element={
           <>
             {/* 2. Hero Section */}
             <Hero
@@ -144,38 +188,54 @@ export const App: React.FC = () => {
             <BecomeMentorSection onBecomeMentor={handleBecomeMentor} />
 
             {/* 11. Insights + newsletter */}
-            <InsightsSection onReadArticle={handleReadArticle} />
+            <InsightsSection onReadArticle={handleReadArticle} onReserveSeat={(title) => openTopic(`Event Seat: ${title}`)} />
 
             {/* 12. Closing CTA */}
             <CtaBanner />
           </>
-        ) : page === 'about' ? (
+          } />
+          <Route path="/about" element={
           <AboutPage
             onTalkToTeam={handleTalkToTeam}
             onGetFunded={handleGetFunded}
             onPartner={handlePartner}
+            onReadArticle={handleReadArticle}
+            onReserveSeat={(title) => openTopic(`Event Seat: ${title}`)}
           />
-        ) : page === 'services' ? (
+          } />
+          <Route path="/services" element={
           <ServicesPage
             onSelectService={handleServiceClick}
+            onReadArticle={handleReadArticle}
+            onReserveSeat={(title) => openTopic(`Event Seat: ${title}`)}
           />
-        ) : page === 'mentors' ? (
+          } />
+          <Route path="/mentors" element={
           <MentorsPage
             onBookMentor={handleBookMentor}
             onBrowseMentors={handleBrowseMentors}
             onConnectMentor={handleConnectMentor}
             onBecomeMentor={handleBecomeMentor}
+            onReadArticle={handleReadArticle}
+            onReserveSeat={(title) => openTopic(`Event Seat: ${title}`)}
           />
-        ) : page === 'programs' ? (
+          } />
+          <Route path="/programs" element={
           <ProgramsPage
             onSelectProgram={(name) => openTopic(`Program Application: ${name}`)}
+            onReadArticle={handleReadArticle}
+            onReserveSeat={(title) => openTopic(`Event Seat: ${title}`)}
           />
-        ) : (
+          } />
+          <Route path="/resources" element={
           <ResourcesPage
             onReadArticle={handleReadArticle}
             onTalkToTeam={handleTalkToTeam}
+            onReserveSeat={(title) => openTopic(`Event Seat: ${title}`)}
           />
-        )}
+          } />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
       </main>
 
       {/* 13. Corporate Footer */}

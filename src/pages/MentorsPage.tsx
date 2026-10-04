@@ -4,12 +4,15 @@ import { MentorTopics } from '../components/MentorTopics';
 import { TestimonialsSection } from '../components/TestimonialsSection';
 import { BecomeMentorSection } from '../components/BecomeMentorSection';
 import { CtaBanner } from '../components/CtaBanner';
+import { InsightsSection } from '../components/InsightsSection';
 
 interface MentorsPageProps {
   onBookMentor?: (mentorName: string) => void;
   onBrowseMentors?: () => void;
   onConnectMentor?: () => void;
   onBecomeMentor?: () => void;
+  onReadArticle?: () => void;
+  onReserveSeat?: (eventTitle: string) => void;
 }
 
 const tabs = [
@@ -245,6 +248,8 @@ export const MentorsPage: React.FC<MentorsPageProps> = ({
   onBrowseMentors,
   onConnectMentor,
   onBecomeMentor,
+  onReadArticle,
+  onReserveSeat,
 }) => {
   const [query, setQuery] = useState('');
   const [activeTab, setActiveTab] = useState('All Mentors');
@@ -266,7 +271,7 @@ export const MentorsPage: React.FC<MentorsPageProps> = ({
   return (
     <>
       {/* Hero — grid backdrop, headline left, booking form right */}
-      <section style={{ position: 'relative', width: '100%', backgroundColor: '#ffffff', overflow: 'hidden' }}>
+      <section data-hero style={{ position: 'relative', width: '100%', backgroundColor: '#ffffff', overflow: 'hidden' }}>
         <div
           style={{
             position: 'absolute', inset: 0, pointerEvents: 'none',
@@ -508,6 +513,7 @@ export const MentorsPage: React.FC<MentorsPageProps> = ({
         </div>
       </section>
 
+      <InsightsSection onReadArticle={onReadArticle} onReserveSeat={onReserveSeat} />
       <CtaBanner />
     </>
   );
