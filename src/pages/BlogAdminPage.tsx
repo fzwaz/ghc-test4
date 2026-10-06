@@ -1,3 +1,7 @@
+/**
+ * NOTE: Sanity Studio (in `studio-ghc/`) is the primary source of truth for GHC content.
+ * This localStorage admin page is preserved as a legacy fallback editor.
+ */
 import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Plus, Pencil, Trash2, Eye, Save, X } from 'lucide-react';

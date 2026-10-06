@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowUpRight, Presentation, ChevronLeft, ChevronRight, CalendarDays, Ticket, Mail, Send, CheckCircle2, Sparkles, ShieldCheck } from 'lucide-react';
-import { events } from '../data/events';
+import type { GhcEvent } from '../data/events';
+import { fetchAllEvents, fetchAllPosts, fetchFeaturedPost } from '../lib/sanity';
+import type { BlogPost } from '../data/blogs';
 
 interface InsightsSectionProps {
   onReadArticle?: () => void;
@@ -13,18 +15,50 @@ export const InsightsSection: React.FC<InsightsSectionProps> = ({
   onReserveSeat,
   showNewsletter = false,
 }) => {
+  const [eventsList, setEventsList] = useState<GhcEvent[]>([]);
+  const [featuredPost, setFeaturedPost] = useState<BlogPost | null>(null);
   const [eventIdx, setEventIdx] = useState(0);
   const [paused, setPaused] = useState(false);
   const [email, setEmail] = useState('');
   const [isSubscribed, setIsSubscribed] = useState(false);
 
   useEffect(() => {
-    if (paused || events.length < 2 || showNewsletter) return;
+    let isMounted = true;
+    async function loadData() {
+      try {
+        const [sanityEvents, sanityFeaturedPost] = await Promise.all([
+          fetchAllEvents(),
+          fetchFeaturedPost(),
+        ]);
+        if (!isMounted) return;
+        // Sanity is the single source of truth — no seed merge
+        setEventsList(sanityEvents || []);
+        if (sanityFeaturedPost) {
+          setFeaturedPost(sanityFeaturedPost);
+        } else {
+          // No featured flag set in Studio — fall back to latest Sanity post if any
+          try {
+            const all = await fetchAllPosts();
+            if (isMounted && all.length > 0) setFeaturedPost(all[0]);
+          } catch { /* keep empty */ }
+        }
+      } catch (err) {
+        console.warn('Failed to load insights data from Sanity:', err);
+      }
+    }
+    loadData();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (paused || eventsList.length < 2 || showNewsletter) return;
     const timer = window.setInterval(() => {
-      setEventIdx((i) => (i + 1) % events.length);
+      setEventIdx((i) => (i + 1) % eventsList.length);
     }, 6000);
     return () => window.clearInterval(timer);
-  }, [paused, showNewsletter]);
+  }, [paused, showNewsletter, eventsList.length]);
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,7 +68,7 @@ export const InsightsSection: React.FC<InsightsSectionProps> = ({
     }
   };
 
-  const current = events.length > 0 ? events[eventIdx % events.length] : null;
+  const current = eventsList.length > 0 ? eventsList[eventIdx % eventsList.length] : null;
 
   return (
     <section id="resources" style={{ width: '100%', backgroundColor: '#f7faf9', padding: '90px 48px 100px 48px', overflow: 'hidden' }}>
@@ -56,13 +90,15 @@ export const InsightsSection: React.FC<InsightsSectionProps> = ({
                 <span style={{ width: '44px', height: '44px', borderRadius: '12px', backgroundColor: '#125651', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <Presentation size={20} />
                 </span>
-                <span style={{ fontSize: '12px', fontWeight: 700, color: '#64748b' }}>15 Aug 2025 • 6 min read • Fundraising</span>
+                <span style={{ fontSize: '12px', fontWeight: 700, color: '#64748b' }}>
+                  {featuredPost ? `${featuredPost.date} • ${featuredPost.readTime} • ${featuredPost.category}` : 'No featured article yet'}
+                </span>
               </div>
               <h3 style={{ fontSize: 'clamp(1.5rem, 2.4vw, 2rem)', fontWeight: 800, color: '#0f172a', lineHeight: 1.3, letterSpacing: '-0.02em', marginBottom: '14px' }}>
-                Pitch Deck Hacks: How to Impress Investors in the First 3 Minutes
+                {featuredPost ? featuredPost.title : 'Add your first blog post in Sanity Studio'}
               </h3>
               <p style={{ fontSize: '15px', color: '#52606d', lineHeight: 1.65, marginBottom: '28px' }}>
-                In the world of fundraising, your pitch deck is more than just slides — it's your startup's story, your vision, and your invitation for investors to join your journey. Most investors decide whether to keep listening within the first 3 minutes. Here's how to make those minutes count.
+                {featuredPost ? featuredPost.excerpt : 'Publish a post in Studio and mark it Featured to show it here.'}
               </p>
             </div>
             <button onClick={onReadArticle} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'none', border: 'none', color: '#125651', fontWeight: 800, fontSize: '15px', cursor: 'pointer', padding: 0 }}>
@@ -235,7 +271,7 @@ export const InsightsSection: React.FC<InsightsSectionProps> = ({
                     EVENTS
                   </span>
                   <span style={{ fontSize: '11.5px', fontWeight: 700, color: '#7d8f8c', letterSpacing: '1px' }}>
-                    {events.length > 0 ? `${(eventIdx % events.length) + 1} / ${events.length}` : '0 / 0'}
+                    {eventsList.length > 0 ? `${(eventIdx % eventsList.length) + 1} / ${eventsList.length}` : '0 / 0'}
                   </span>
                 </div>
                 <h3 style={{ fontSize: '24px', fontWeight: 800, color: '#fff', marginBottom: '14px' }}>Ongoing & Upcoming Events</h3>
@@ -258,25 +294,25 @@ export const InsightsSection: React.FC<InsightsSectionProps> = ({
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '16px', marginBottom: '16px' }}>
                   <button
                     aria-label="Previous event"
-                    onClick={() => setEventIdx((i) => (i - 1 + events.length) % events.length)}
+                    onClick={() => setEventIdx((i) => (i - 1 + eventsList.length) % eventsList.length)}
                     style={{ width: '34px', height: '34px', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.16)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
                   >
                     <ChevronLeft size={16} />
                   </button>
                   <button
                     aria-label="Next event"
-                    onClick={() => setEventIdx((i) => (i + 1) % events.length)}
+                    onClick={() => setEventIdx((i) => (i + 1) % eventsList.length)}
                     style={{ width: '34px', height: '34px', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.16)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
                   >
                     <ChevronRight size={16} />
                   </button>
                   <div style={{ display: 'flex', gap: '6px', marginLeft: '4px' }}>
-                    {events.map((e, dotIdx) => (
+                    {eventsList.map((e, dotIdx) => (
                       <button
                         key={e.id}
                         aria-label={`Go to event ${dotIdx + 1}`}
                         onClick={() => setEventIdx(dotIdx)}
-                        style={{ width: dotIdx === eventIdx % events.length ? '22px' : '8px', height: '8px', borderRadius: '9999px', border: 'none', cursor: 'pointer', backgroundColor: dotIdx === eventIdx % events.length ? '#2dd4bf' : 'rgba(255,255,255,0.25)', transition: 'all 0.25s ease', padding: 0 }}
+                        style={{ width: dotIdx === eventIdx % eventsList.length ? '22px' : '8px', height: '8px', borderRadius: '9999px', border: 'none', cursor: 'pointer', backgroundColor: dotIdx === eventIdx % eventsList.length ? '#2dd4bf' : 'rgba(255,255,255,0.25)', transition: 'all 0.25s ease', padding: 0 }}
                       />
                     ))}
                   </div>
@@ -303,4 +339,3 @@ export const InsightsSection: React.FC<InsightsSectionProps> = ({
     </section>
   );
 };
-

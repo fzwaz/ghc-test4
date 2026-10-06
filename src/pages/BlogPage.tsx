@@ -1,10 +1,10 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, Search, Clock, CalendarDays, User, Plus, BookOpen } from 'lucide-react';
+import { ArrowRight, Search, Clock, CalendarDays, User, BookOpen, Loader2 } from 'lucide-react';
 import { CtaBanner } from '../components/CtaBanner';
 import { InsightsSection } from '../components/InsightsSection';
-import { blogCategories } from '../data/blogs';
-import { getAllBlogs } from '../utils/blogStore';
+import { blogCategories, type BlogPost } from '../data/blogs';
+import { fetchAllPosts } from '../lib/sanity';
 
 interface BlogPageProps {
   onReadArticle?: () => void;
@@ -29,14 +29,37 @@ export const BlogPage: React.FC<BlogPageProps> = ({ onReadArticle, onReserveSeat
   const navigate = useNavigate();
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState('All');
+  const [blogs, setBlogs] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const blogs = useMemo(() => getAllBlogs(), []);
+  useEffect(() => {
+    let isMounted = true;
+    async function loadBlogs() {
+      setLoading(true);
+      try {
+        // Sanity is now the single source of truth — no local/seed fallback
+        const sanityPosts = await fetchAllPosts();
+        if (!isMounted) return;
+        setBlogs(sanityPosts || []);
+      } catch (err) {
+        console.warn('Could not fetch blogs from Sanity:', err);
+        if (isMounted) setBlogs([]);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    }
+    loadBlogs();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   const filtered = blogs.filter((b) => {
     const matchCat = category === 'All' || b.category === category;
     const q = query.trim().toLowerCase();
     const matchQ =
       !q ||
-      `${b.title} ${b.excerpt} ${b.author} ${b.tags.join(' ')}`.toLowerCase().includes(q);
+      `${b.title} ${b.excerpt} ${b.author} ${(b.tags || []).join(' ')}`.toLowerCase().includes(q);
     return matchCat && matchQ;
   });
 
@@ -85,12 +108,6 @@ export const BlogPage: React.FC<BlogPageProps> = ({ onReadArticle, onReserveSeat
                     style={{ border: 'none', outline: 'none', background: 'transparent', fontSize: '14.5px', width: '100%', color: '#0f172a' }}
                   />
                 </div>
-                <button
-                  onClick={() => navigate('/blog/admin')}
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', backgroundColor: '#ffffff', border: '1px solid #dce7e4', borderRadius: '9999px', padding: '13px 22px', fontSize: '13.5px', fontWeight: 700, color: '#0f172a', cursor: 'pointer', fontFamily: 'inherit' }}
-                >
-                  <Plus size={15} /> Write / Manage
-                </button>
               </div>
             </div>
 
@@ -188,7 +205,13 @@ export const BlogPage: React.FC<BlogPageProps> = ({ onReadArticle, onReserveSeat
             })}
           </div>
 
-          {filtered.length === 0 ? (
+          {loading ? (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 24px', backgroundColor: '#fff', borderRadius: '20px', border: '1px solid #eef2f1' }}>
+              <Loader2 size={36} className="animate-spin" style={{ color: '#1a7b74', marginBottom: '16px', animation: 'spin 1s linear infinite' }} />
+              <p style={{ fontSize: '15px', color: '#64748b', fontWeight: 500 }}>Loading articles...</p>
+              <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
+            </div>
+          ) : filtered.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '80px 24px', backgroundColor: '#fff', borderRadius: '20px', border: '1px solid #eef2f1' }}>
               <span style={{ width: '64px', height: '64px', borderRadius: '50%', backgroundColor: '#e6f4f1', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginBottom: '18px' }}>
                 <BookOpen size={28} style={{ color: '#1a7b74' }} />
@@ -197,44 +220,131 @@ export const BlogPage: React.FC<BlogPageProps> = ({ onReadArticle, onReserveSeat
               <p style={{ fontSize: '14.5px', color: '#94a3b8' }}>Try a different search or category.</p>
             </div>
           ) : (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px' }}>
               {filtered.map((b) => (
                 <div
                   key={b.slug}
                   onClick={() => navigate(`/blog/${b.slug}`)}
                   style={{
-                    borderRadius: '24px', overflow: 'hidden', backgroundColor: '#ffffff',
-                    border: '1px solid #e2e8f0', boxShadow: '0 10px 24px -6px rgba(0,0,0,0.05)',
-                    display: 'flex', flexDirection: 'column', minHeight: '540px',
-                    cursor: 'pointer', transition: 'all 0.3s cubic-bezier(0.16,1,0.3,1)',
+                    borderRadius: '20px',
+                    overflow: 'hidden',
+                    backgroundColor: '#ffffff',
+                    border: '1px solid #e2e8f0',
+                    boxShadow: '0 4px 16px -2px rgba(0,0,0,0.04)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    cursor: 'pointer',
+                    transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
                   }}
-                  onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-6px)'; e.currentTarget.style.borderColor = '#99f6e4'; e.currentTarget.style.boxShadow = '0 20px 40px -10px rgba(18,86,81,0.18)'; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = '#e2e8f0'; e.currentTarget.style.boxShadow = '0 10px 24px -6px rgba(0,0,0,0.05)'; }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-4px)';
+                    e.currentTarget.style.borderColor = '#99f6e4';
+                    e.currentTarget.style.boxShadow = '0 16px 32px -8px rgba(18,86,81,0.14)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.borderColor = '#e2e8f0';
+                    e.currentTarget.style.boxShadow = '0 4px 16px -2px rgba(0,0,0,0.04)';
+                  }}
                 >
-                  <div style={{ background: b.coverGradient, height: '230px', minHeight: '230px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '76px', position: 'relative', overflow: 'hidden' }}>
-                    <span>{b.coverEmoji}</span>
-                    <span style={{ position: 'absolute', top: '16px', left: '16px', fontSize: '11px', fontWeight: 800, letterSpacing: '1px', color: '#ffffff', backgroundColor: 'rgba(255,255,255,0.22)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.35)', padding: '5px 12px', borderRadius: '9999px' }}>
+                  {/* Card Cover Header */}
+                  <div
+                    style={{
+                      background: b.coverImageUrl ? `url(${b.coverImageUrl}) center/cover no-repeat` : b.coverGradient,
+                      height: '175px',
+                      minHeight: '175px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '52px',
+                      position: 'relative',
+                      overflow: 'hidden',
+                    }}
+                  >
+                    {!b.coverImageUrl && <span>{b.coverEmoji}</span>}
+                    <span
+                      style={{
+                        position: 'absolute',
+                        top: '12px',
+                        left: '12px',
+                        fontSize: '10.5px',
+                        fontWeight: 800,
+                        letterSpacing: '0.8px',
+                        color: '#ffffff',
+                        backgroundColor: 'rgba(0, 0, 0, 0.28)',
+                        backdropFilter: 'blur(8px)',
+                        WebkitBackdropFilter: 'blur(8px)',
+                        border: '1px solid rgba(255,255,255,0.3)',
+                        padding: '4px 10px',
+                        borderRadius: '9999px',
+                      }}
+                    >
                       {b.category.toUpperCase()}
                     </span>
                   </div>
-                  <div style={{ padding: '26px 24px 24px 24px', display: 'flex', flexDirection: 'column', flex: 1 }}>
-                    <h3 style={{ fontSize: '19px', fontWeight: 800, color: '#0f172a', lineHeight: 1.35, marginBottom: '10px' }}>{b.title}</h3>
-                    <p style={{ fontSize: '13.5px', color: '#52606d', lineHeight: 1.6, marginBottom: '18px', flex: 1 }}>{b.excerpt}</p>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '14px', fontSize: '12.5px', color: '#64748b', marginBottom: '20px', flexWrap: 'wrap' }}>
-                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}><CalendarDays size={13} /> {b.date}</span>
-                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}><Clock size={13} /> {b.readTime}</span>
+
+                  {/* Card Body */}
+                  <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'space-between' }}>
+                    <div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '11.5px', color: '#64748b', marginBottom: '8px', flexWrap: 'wrap' }}>
+                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}><CalendarDays size={12} /> {b.date}</span>
+                        <span>•</span>
+                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}><Clock size={12} /> {b.readTime}</span>
+                      </div>
+
+                      <h3
+                        style={{
+                          fontSize: '17px',
+                          fontWeight: 800,
+                          color: '#0f172a',
+                          lineHeight: 1.35,
+                          marginBottom: '8px',
+                          display: '-webkit-box',
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: 'vertical',
+                          overflow: 'hidden',
+                        }}
+                      >
+                        {b.title}
+                      </h3>
+
+                      <p
+                        style={{
+                          fontSize: '13px',
+                          color: '#52606d',
+                          lineHeight: 1.55,
+                          marginBottom: '16px',
+                          display: '-webkit-box',
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: 'vertical',
+                          overflow: 'hidden',
+                        }}
+                      >
+                        {b.excerpt}
+                      </p>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12.5px', color: '#64748b', marginBottom: '20px' }}>
-                      <User size={13} />
-                      <span style={{ fontWeight: 600, color: '#334155' }}>{b.author}</span>
+
+                    <div>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '12px', borderTop: '1px solid #f1f5f9' }}>
+                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '12px', color: '#475569', fontWeight: 600 }}>
+                          <User size={13} style={{ color: '#1a7b74' }} />
+                          <span>{b.author}</span>
+                        </div>
+
+                        <span
+                          style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '4px',
+                            color: '#1a7b74',
+                            fontSize: '12.5px',
+                            fontWeight: 700,
+                          }}
+                        >
+                          Read <ArrowRight size={13} />
+                        </span>
+                      </div>
                     </div>
-                    <button
-                      onClick={(e) => { e.stopPropagation(); navigate(`/blog/${b.slug}`); }}
-                      className="btn-secondary"
-                      style={{ width: '100%', padding: '11px', fontSize: '13.5px', borderRadius: '12px', justifyContent: 'center' }}
-                    >
-                      <span>Read Article</span><ArrowRight size={14} />
-                    </button>
                   </div>
                 </div>
               ))}

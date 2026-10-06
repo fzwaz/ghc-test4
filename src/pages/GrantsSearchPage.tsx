@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, ChevronDown, ArrowLeft, SlidersHorizontal } from 'lucide-react';
+import { Search, ChevronDown, ArrowLeft, SlidersHorizontal, RotateCcw } from 'lucide-react';
 import { CtaBanner } from '../components/CtaBanner';
 import {
   opportunityTypes,
@@ -17,12 +17,13 @@ const selectStyle: React.CSSProperties = {
   backgroundColor: '#ffffff',
   border: '1px solid #dce7e4',
   borderRadius: '12px',
-  padding: '13px 40px 13px 16px',
-  fontSize: '14px',
+  padding: '12px 38px 12px 14px',
+  fontSize: '13.5px',
   color: '#0f172a',
   outline: 'none',
   cursor: 'pointer',
   fontFamily: 'inherit',
+  transition: 'border-color 0.2s ease',
 };
 
 const FilterSelect: React.FC<{
@@ -31,8 +32,8 @@ const FilterSelect: React.FC<{
   onChange: (v: string) => void;
   options: { value: string; label: string }[];
 }> = ({ label, value, onChange, options }) => (
-  <div style={{ marginBottom: '26px' }}>
-    <label style={{ display: 'block', fontSize: '15px', fontWeight: 800, color: '#0f172a', marginBottom: '10px' }}>
+  <div style={{ marginBottom: '20px' }}>
+    <label style={{ display: 'block', fontSize: '13.5px', fontWeight: 800, color: '#0f172a', marginBottom: '8px' }}>
       {label}
     </label>
     <div style={{ position: 'relative' }}>
@@ -41,7 +42,7 @@ const FilterSelect: React.FC<{
           <option key={o.value} value={o.value}>{o.label}</option>
         ))}
       </select>
-      <ChevronDown size={17} style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', pointerEvents: 'none' }} />
+      <ChevronDown size={16} style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', pointerEvents: 'none' }} />
     </div>
   </div>
 );
@@ -74,10 +75,10 @@ export const GrantsSearchPage: React.FC = () => {
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [searching, setSearching] = useState(true);
 
-  // No live listings yet — simulate a lookup, then settle on the empty state.
+  // Simulate a lookup, then settle on the empty state.
   useEffect(() => {
     setSearching(true);
-    const timer = window.setTimeout(() => setSearching(false), 1400);
+    const timer = window.setTimeout(() => setSearching(false), 800);
     return () => window.clearTimeout(timer);
   }, [query, type, sector, country, stage, deadline, equity, sort]);
 
@@ -97,15 +98,13 @@ export const GrantsSearchPage: React.FC = () => {
       <FilterSelect label="Country" value={country} onChange={setCountry} options={[{ value: 'All Countries', label: 'All Countries' }]} />
       <FilterSelect label="Stage" value={stage} onChange={setStage} options={opportunityStages.map((s) => ({ value: s, label: s }))} />
       <FilterSelect label="Deadline" value={deadline} onChange={setDeadline} options={opportunityDeadlines} />
-      <div style={{ marginBottom: hasActiveFilters ? '20px' : '4px' }}>
-        <FilterSelect label="Equity" value={equity} onChange={setEquity} options={opportunityEquity} />
-      </div>
+      <FilterSelect label="Equity" value={equity} onChange={setEquity} options={opportunityEquity} />
       {hasActiveFilters && (
         <button
           onClick={clearAll}
-          style={{ width: '100%', padding: '12px', borderRadius: '12px', border: '1px solid #99f6e4', backgroundColor: '#f0fdfa', color: '#125651', fontWeight: 700, fontSize: '13.5px', cursor: 'pointer' }}
+          style={{ width: '100%', padding: '11px', borderRadius: '12px', border: '1px solid #99f6e4', backgroundColor: '#f0fdfa', color: '#125651', fontWeight: 700, fontSize: '13px', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px', marginTop: '6px' }}
         >
-          Clear All Filters
+          <RotateCcw size={14} /> Clear All Filters
         </button>
       )}
     </>
@@ -113,91 +112,117 @@ export const GrantsSearchPage: React.FC = () => {
 
   return (
     <>
-      <section style={{ width: '100%', backgroundColor: '#f7faf9', padding: '130px 48px 30px 48px' }}>
-        <div style={{ maxWidth: '1380px', margin: '0 auto' }}>
-          <button
-            onClick={() => navigate('/grants')}
-            style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', backgroundColor: '#ffffff', color: '#0f172a', border: '1px solid #dce7e4', borderRadius: '9999px', padding: '10px 20px', fontWeight: 700, fontSize: '13.5px', cursor: 'pointer', marginBottom: '18px', fontFamily: 'inherit' }}
+      <section style={{ width: '100%', backgroundColor: '#f7faf9', padding: '120px 48px 100px 48px', minHeight: '100vh' }}>
+        <div style={{ maxWidth: '1380px', margin: '0 auto', display: 'grid', gridTemplateColumns: '310px 1fr', gap: '32px', alignItems: 'start' }} className="grants-search-grid">
+          
+          {/* LHS Sticky Filters Sidebar */}
+          <aside
+            style={{
+              borderRadius: '20px',
+              backgroundColor: '#ffffff',
+              border: '1px solid rgba(20,184,166,0.35)',
+              padding: '24px 20px',
+              position: 'sticky',
+              top: '90px',
+              maxHeight: 'calc(100vh - 110px)',
+              overflowY: 'auto',
+              boxShadow: '0 8px 24px -4px rgba(18,86,81,0.06)',
+              zIndex: 10,
+            }}
+            className="grants-filters"
           >
-            <ArrowLeft size={15} /> Back to Grants
-          </button>
-          <div style={{ borderRadius: '20px', backgroundColor: '#ffffff', border: '1px solid rgba(20,184,166,0.35)', padding: '28px', boxShadow: '0 12px 32px -10px rgba(18,86,81,0.1)' }}>
-            <div style={{ display: 'flex', gap: '14px', alignItems: 'center', flexWrap: 'wrap' }}>
-              <div style={{ position: 'relative', flex: '1 1 420px' }}>
-                <Search size={18} style={{ position: 'absolute', left: '22px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', pointerEvents: 'none' }} />
-                <input
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  onKeyDown={(e) => { if (e.key === 'Enter') document.getElementById('grant-results')?.scrollIntoView({ behavior: 'smooth' }); }}
-                  placeholder="Search grants, fellowships, accelerators..."
-                  style={{ width: '100%', backgroundColor: '#f1f5f9', color: '#0f172a', border: '1px solid #e2e8f0', borderRadius: '9999px', padding: '17px 24px 17px 52px', fontSize: '15px', outline: 'none' }}
-                />
-              </div>
-              <button
-                onClick={() => document.getElementById('grant-results')?.scrollIntoView({ behavior: 'smooth' })}
-                style={{ backgroundColor: '#0f2f3d', color: '#ffffff', border: 'none', borderRadius: '9999px', padding: '17px 44px', fontWeight: 800, fontSize: '15.5px', cursor: 'pointer', boxShadow: '0 10px 24px -8px rgba(15,47,61,0.5)' }}
-              >
-                Search
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="grant-results" style={{ width: '100%', backgroundColor: '#f7faf9', padding: '10px 48px 100px 48px' }}>
-        <div style={{ maxWidth: '1380px', margin: '0 auto', display: 'grid', gridTemplateColumns: '300px 1fr', gap: '28px', alignItems: 'start' }} className="grants-search-grid">
-          <aside style={{ borderRadius: '20px', backgroundColor: '#ffffff', border: '1px solid rgba(20,184,166,0.35)', padding: '28px 24px', position: 'sticky', top: '110px' }} className="grants-filters">
             <div
               onClick={() => setFiltersOpen(!filtersOpen)}
-              style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer', marginBottom: '22px' }}
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer', marginBottom: '18px', paddingBottom: '14px', borderBottom: '1px solid #f1f5f9' }}
               className="grants-filters-toggle"
             >
-              <span style={{ fontSize: '13px', fontWeight: 800, letterSpacing: '2px', color: '#0f172a', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
-                <SlidersHorizontal size={15} /> FILTERS
+              <span style={{ fontSize: '13px', fontWeight: 800, letterSpacing: '1.5px', color: '#0f172a', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                <SlidersHorizontal size={15} style={{ color: '#1a7b74' }} /> FILTERS
               </span>
-              <ChevronDown size={17} style={{ color: '#64748b', transform: filtersOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s ease' }} className="grants-filters-chevron" />
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                {hasActiveFilters && (
+                  <span style={{ fontSize: '11px', fontWeight: 700, color: '#1a7b74', backgroundColor: '#e6f4f1', padding: '2px 8px', borderRadius: '9999px' }}>
+                    Active
+                  </span>
+                )}
+                <ChevronDown size={17} style={{ color: '#64748b', transform: filtersOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s ease' }} className="grants-filters-chevron" />
+              </div>
             </div>
             <div className={filtersOpen ? 'grants-filters-body open' : 'grants-filters-body'}>
               {filters}
             </div>
           </aside>
 
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap', marginBottom: '24px' }}>
-              <p style={{ fontSize: '17px', color: '#0f172a' }}>
+          {/* RHS Main Search & Results Area */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            
+            {/* Top Navigation & Search Box */}
+            <div>
+              <button
+                onClick={() => navigate('/grants')}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', backgroundColor: '#ffffff', color: '#0f172a', border: '1px solid #dce7e4', borderRadius: '9999px', padding: '9px 18px', fontWeight: 700, fontSize: '13px', cursor: 'pointer', marginBottom: '14px', fontFamily: 'inherit' }}
+              >
+                <ArrowLeft size={14} /> Back to Grants
+              </button>
+
+              <div style={{ borderRadius: '20px', backgroundColor: '#ffffff', border: '1px solid rgba(20,184,166,0.35)', padding: '20px 24px', boxShadow: '0 8px 24px -6px rgba(18,86,81,0.08)' }}>
+                <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
+                  <div style={{ position: 'relative', flex: '1 1 360px' }}>
+                    <Search size={18} style={{ position: 'absolute', left: '18px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', pointerEvents: 'none' }} />
+                    <input
+                      value={query}
+                      onChange={(e) => setQuery(e.target.value)}
+                      placeholder="Search grants, fellowships, accelerators..."
+                      style={{ width: '100%', boxSizing: 'border-box', backgroundColor: '#f1f5f9', color: '#0f172a', border: '1px solid #e2e8f0', borderRadius: '9999px', padding: '14px 20px 14px 48px', fontSize: '14.5px', outline: 'none' }}
+                    />
+                  </div>
+                  <button
+                    onClick={() => {}}
+                    style={{ backgroundColor: '#0f2f3d', color: '#ffffff', border: 'none', borderRadius: '9999px', padding: '14px 34px', fontWeight: 800, fontSize: '14.5px', cursor: 'pointer', boxShadow: '0 8px 20px -6px rgba(15,47,61,0.4)' }}
+                  >
+                    Search
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Results Count & Sort Bar */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap' }}>
+              <p style={{ fontSize: '16px', color: '#0f172a', margin: 0 }}>
                 {searching ? (
-                  <span>Searching...</span>
+                  <span style={{ color: '#64748b' }}>Searching opportunities...</span>
                 ) : (
-                  <><strong style={{ fontWeight: 800 }}>0</strong> opportunities</>
+                  <><strong style={{ fontWeight: 800 }}>0</strong> opportunities found</>
                 )}
               </p>
               <div style={{ position: 'relative' }}>
                 <select
                   value={sort}
                   onChange={(e) => setSort(e.target.value)}
-                  style={{ appearance: 'none', WebkitAppearance: 'none', backgroundColor: '#ffffff', border: '1px solid rgba(20,184,166,0.4)', borderRadius: '12px', padding: '12px 44px 12px 18px', fontSize: '14px', fontWeight: 600, color: '#0f172a', outline: 'none', cursor: 'pointer', fontFamily: 'inherit' }}
+                  style={{ appearance: 'none', WebkitAppearance: 'none', backgroundColor: '#ffffff', border: '1px solid rgba(20,184,166,0.4)', borderRadius: '12px', padding: '10px 38px 10px 16px', fontSize: '13.5px', fontWeight: 600, color: '#0f172a', outline: 'none', cursor: 'pointer', fontFamily: 'inherit' }}
                 >
                   {opportunitySorts.map((o) => (
                     <option key={o.value} value={o.value}>{o.label}</option>
                   ))}
                 </select>
-                <ChevronDown size={17} style={{ position: 'absolute', right: '15px', top: '50%', transform: 'translateY(-50%)', color: '#0f172a', pointerEvents: 'none' }} />
+                <ChevronDown size={16} style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: '#0f172a', pointerEvents: 'none' }} />
               </div>
             </div>
 
+            {/* Results / Empty / Skeleton State */}
             {searching ? (
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }} className="grants-skeleton-grid">
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' }} className="grants-skeleton-grid">
                 {[0, 1, 2, 3, 4, 5].map((i) => (
                   <SkeletonCard key={i} />
                 ))}
               </div>
             ) : (
-              <div style={{ textAlign: 'center', padding: '90px 24px', borderRadius: '20px', backgroundColor: '#ffffff', border: '1px solid #eef2f1' }}>
-                <span style={{ width: '76px', height: '76px', borderRadius: '50%', backgroundColor: '#e6f4f1', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginBottom: '22px' }}>
-                  <Search size={32} style={{ color: '#0d9488' }} />
+              <div style={{ textAlign: 'center', padding: '80px 24px', borderRadius: '20px', backgroundColor: '#ffffff', border: '1px solid #eef2f1', boxShadow: '0 4px 16px rgba(0,0,0,0.02)' }}>
+                <span style={{ width: '72px', height: '72px', borderRadius: '50%', backgroundColor: '#e6f4f1', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px' }}>
+                  <Search size={30} style={{ color: '#0d9488' }} />
                 </span>
-                <h3 style={{ fontSize: '21px', fontWeight: 800, color: '#0f172a', marginBottom: '10px' }}>No opportunities found</h3>
-                <p style={{ fontSize: '15px', color: '#94a3b8', marginBottom: '26px' }}>Try different keywords or remove some filters</p>
+                <h3 style={{ fontSize: '20px', fontWeight: 800, color: '#0f172a', marginBottom: '8px' }}>No opportunities found</h3>
+                <p style={{ fontSize: '14.5px', color: '#94a3b8', marginBottom: '24px' }}>Try different keywords or remove some filters</p>
                 <button
                   onClick={clearAll}
                   className="btn-secondary"
@@ -223,9 +248,19 @@ export const GrantsSearchPage: React.FC = () => {
           background-size: 200% 100%;
           animation: grantShimmer 1.4s linear infinite;
         }
+        .grants-filters::-webkit-scrollbar {
+          width: 5px;
+        }
+        .grants-filters::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .grants-filters::-webkit-scrollbar-thumb {
+          background: #d1fae5;
+          border-radius: 9999px;
+        }
         @media (max-width: 960px) {
           .grants-search-grid { grid-template-columns: 1fr !important; }
-          .grants-filters { position: static !important; }
+          .grants-filters { position: static !important; max-height: none !important; }
           .grants-filters-body { display: none; }
           .grants-filters-body.open { display: block; }
           .grants-skeleton-grid { grid-template-columns: 1fr !important; }
