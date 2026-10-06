@@ -20,21 +20,6 @@ const companyNames = [
   'Rootflo', 'SuperBryn',
 ];
 
-const focusLines = [
-  'Mentored on fundraising, valuation and investor readiness.',
-  'Supported through compliance, entity setup and grant access.',
-  'Guided on go-to-market, pricing and early revenue growth.',
-  'Advised on pitch deck, unit economics and scale-up planning.',
-  'Backed with 1-on-1 mentoring and funding connections.',
-];
-
-const bottomTags = [
-  'MENTORED BY GHC',
-  'FUNDED WITH GHC',
-  'GHC COMMUNITY',
-  'PORTFOLIO STARTUP',
-];
-
 const companies: Company[] = companyNames.map((name, idx) => ({
   name,
   logo: undefined,
@@ -47,16 +32,13 @@ function placeholderInitial(name: string) {
 }
 
 function renderCard(c: Company, idx: number, dark: boolean) {
-  const focus = focusLines[idx % focusLines.length];
-  const tag = bottomTags[idx % bottomTags.length];
-  const topLabel = idx % 2 === 0 ? 'Portfolio Startup' : 'Community Member';
-
   return (
     <div
       key={idx}
       style={{
         borderRadius: '22px',
         padding: '28px 26px',
+        minHeight: '250px',
         backgroundColor: dark ? '#0b0f0e' : '#ffffff',
         border: dark ? '1px solid rgba(255,255,255,0.08)' : '1px solid #e8e8e8',
         boxShadow: dark
@@ -64,45 +46,34 @@ function renderCard(c: Company, idx: number, dark: boolean) {
           : '0 14px 32px -12px rgba(18,86,81,0.12)',
         display: 'flex',
         flexDirection: 'column',
-        gap: '16px',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '20px',
+        textAlign: 'center',
       }}
     >
-      <span style={{ fontSize: '15px', fontWeight: 500, color: dark ? '#9ca3af' : '#6b7280' }}>
-        {topLabel}
+      <span
+        style={{
+          width: '88px', height: '88px', borderRadius: '50%',
+          backgroundColor: c.color, color: '#ffffff',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          overflow: 'hidden', flexShrink: 0,
+        }}
+      >
+        {c.logo ? (
+          <img
+            src={c.logo}
+            alt={`${c.name} logo`}
+            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+          />
+        ) : (
+          <span style={{ fontSize: '36px', fontWeight: 800, lineHeight: 1 }}>
+            {placeholderInitial(c.name)}
+          </span>
+        )}
       </span>
-
-      <span style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-        <span
-          style={{
-            width: '44px', height: '44px', borderRadius: '50%',
-            backgroundColor: c.color, color: '#ffffff',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            overflow: 'hidden', flexShrink: 0,
-          }}
-        >
-          {c.logo ? (
-            <img
-              src={c.logo}
-              alt={`${c.name} logo`}
-              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-            />
-          ) : (
-            <span style={{ fontSize: '18px', fontWeight: 800, lineHeight: 1 }}>
-              {placeholderInitial(c.name)}
-            </span>
-          )}
-        </span>
-        <span style={{ fontSize: '18px', fontWeight: 800, color: dark ? '#ffffff' : '#0f172a', letterSpacing: '-0.01em' }}>
-          {c.name}
-        </span>
-      </span>
-
-      <p style={{ fontSize: '16.5px', lineHeight: 1.55, color: dark ? '#e5e7eb' : '#1f2937', margin: 0 }}>
-        {focus}
-      </p>
-
-      <span style={{ fontSize: '11.5px', fontWeight: 500, letterSpacing: '2.5px', color: dark ? '#6b7280' : '#9ca3af' }}>
-        {tag}
+      <span style={{ fontSize: '24px', fontWeight: 800, color: dark ? '#ffffff' : '#0f172a', letterSpacing: '-0.01em', lineHeight: 1.25 }}>
+        {c.name}
       </span>
     </div>
   );
@@ -137,10 +108,10 @@ export const PortfolioWall: React.FC = () => {
         {/* Left sticky headline */}
         <div style={{ position: 'sticky', top: '120px' }}>
           <h2 style={{ fontSize: 'clamp(2.6rem, 4.2vw, 3.9rem)', fontWeight: 800, lineHeight: 1.12, letterSpacing: '-0.03em', color: '#0a0a0a', marginBottom: '24px' }}>
-            <span style={{ fontStyle: 'italic', fontWeight: 700, color: '#1a7b74' }}>Discover inspiring</span> stories from founders.
+            <span style={{ fontStyle: 'italic', fontWeight: 700, color: '#1a7b74' }}>Hear from</span> our client.
           </h2>
           <p style={{ fontSize: '17px', lineHeight: 1.65, color: '#5b6470', maxWidth: '400px' }}>
-            Real journeys from startups building with GHC Growth Lab — across funding, mentorship, compliance and scale-up.
+            Discover Inspiring Stories and Insights from founders of Startups
           </p>
         </div>
 

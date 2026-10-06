@@ -1,39 +1,53 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, ArrowRight, Menu, X, Sparkles, Award, ShieldCheck, Briefcase } from 'lucide-react';
+import { ChevronDown, ArrowRight, Menu, X, Sparkles, Award, Search, GraduationCap, FileText, BookOpen, ShieldCheck, RotateCcw } from 'lucide-react';
 
-export type PageKey = 'home' | 'about' | 'services' | 'mentors' | 'programs' | 'resources';
+export type PageKey = 'home' | 'about' | 'services' | 'mentors' | 'become-mentor' | 'funding' | 'grants' | 'global-services' | 'blog' | 'resources' | 'contact' | 'privacy-policy' | 'terms-conditions' | 'refund-policy' | 'our-story';
 
 interface NavbarProps {
-  onGetStartedClick?: () => void;
   onLoginClick?: () => void;
   onNavigate?: (page: PageKey, anchor?: string) => void;
   activePage?: PageKey;
 }
 
+const navItemStyle = (active: boolean): React.CSSProperties => ({
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: '4px',
+  height: '32px',
+  fontSize: '14.5px',
+  fontWeight: '600',
+  lineHeight: '1',
+  color: active ? '#125651' : '#334155',
+  background: 'none',
+  border: 'none',
+  borderBottom: active ? '2px solid #125651' : '2px solid transparent',
+  padding: '0 0 2px 0',
+  margin: 0,
+  cursor: 'pointer',
+  fontFamily: 'inherit',
+  textDecoration: 'none',
+  boxSizing: 'border-box',
+  verticalAlign: 'middle',
+  transition: 'color 0.2s ease, border-color 0.2s ease',
+});
+
 const NavItem: React.FC<{ active: boolean; onClick: () => void; children: React.ReactNode }> = ({ active, onClick, children }) => (
   <button
+    type="button"
     onClick={onClick}
-    style={{
-      fontSize: '14.5px',
-      fontWeight: '600',
-      color: active ? '#125651' : '#334155',
-      background: 'none',
-      border: 'none',
-      borderBottom: active ? '2px solid #125651' : '2px solid transparent',
-      paddingBottom: '2px',
-      cursor: 'pointer',
-      fontFamily: 'inherit',
-      transition: 'color 0.2s ease',
-    }}
-    onMouseEnter={(e) => (e.currentTarget.style.color = '#125651')}
-    onMouseLeave={(e) => (e.currentTarget.style.color = active ? '#125651' : '#334155')}
+    style={navItemStyle(active)}
+    onMouseEnter={(e) => { e.currentTarget.style.color = '#125651'; }}
+    onMouseLeave={(e) => { e.currentTarget.style.color = active ? '#125651' : '#334155'; }}
   >
     {children}
   </button>
 );
 
-export const Navbar: React.FC<NavbarProps> = ({ onGetStartedClick, onLoginClick, onNavigate, activePage = 'home' }) => {
+export const Navbar: React.FC<NavbarProps> = ({ onNavigate, activePage = 'home' }) => {
   const [isServicesOpen, setIsServicesOpen] = useState(false);
+  const [isMentorsOpen, setIsMentorsOpen] = useState(false);
+  const [isCompanyOpen, setIsCompanyOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -50,10 +64,21 @@ export const Navbar: React.FC<NavbarProps> = ({ onGetStartedClick, onLoginClick,
   }, []);
 
   const servicesList: { title: string; desc: string; icon: React.ElementType; page: PageKey; anchor?: string }[] = [
-    { title: 'Fundraising & Investment Banking', desc: 'Debt & equity funding, investor readiness', icon: Sparkles, page: 'services', anchor: 'service-funding' },
     { title: '1-on-1 Mentorship', desc: 'Personalized guidance from top venture leaders', icon: Award, page: 'mentors' },
-    { title: 'Company Setup & Registration', desc: 'Startup India, KSUM, compliance & tax', icon: ShieldCheck, page: 'services', anchor: 'service-setup' },
-    { title: 'Growth & Scaling Strategy', desc: 'Financial modeling, process automation', icon: Briefcase, page: 'services', anchor: 'service-growth' },
+    { title: 'Funding', desc: 'Equity & venture debt funding solutions', icon: Sparkles, page: 'funding' },
+    { title: 'Templates', desc: 'Pitch decks, models & founder resources', icon: FileText, page: 'resources' },
+  ];
+
+  const mentorsList: { title: string; desc: string; icon: React.ElementType; page: PageKey }[] = [
+    { title: 'Browse Mentors', desc: 'Find 1-on-1 guidance from 100+ vetted experts', icon: Search, page: 'mentors' },
+    { title: 'Become a Mentor', desc: 'Share expertise, earn and build your brand', icon: GraduationCap, page: 'become-mentor' },
+  ];
+
+  const companyList: { title: string; desc: string; icon: React.ElementType; page: PageKey; anchor?: string }[] = [
+    { title: 'Our Story', desc: 'Who we are and why we exist', icon: BookOpen, page: 'our-story' },
+    { title: 'Privacy Policy', desc: 'How we collect and protect your data', icon: ShieldCheck, page: 'privacy-policy' },
+    { title: 'Terms & Conditions', desc: 'Terms governing our services', icon: FileText, page: 'terms-conditions' },
+    { title: 'Refund Policy', desc: 'Eligibility and refund process', icon: RotateCcw, page: 'refund-policy' },
   ];
 
   return (
@@ -120,32 +145,226 @@ export const Navbar: React.FC<NavbarProps> = ({ onGetStartedClick, onLoginClick,
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '32px',
+            gap: '28px',
           }}
         >
-          {/* Services with Dropdown */}
+          {/* 1. About Us */}
+          <NavItem active={activePage === 'about'} onClick={() => onNavigate?.('about')}>
+            About Us
+          </NavItem>
+
+          {/* 2. Company with Dropdown */}
           <div
-            style={{ position: 'relative' }}
+            style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}
+            onMouseEnter={() => setIsCompanyOpen(true)}
+            onMouseLeave={() => setIsCompanyOpen(false)}
+          >
+            <button
+              type="button"
+              onClick={() => setIsCompanyOpen(!isCompanyOpen)}
+              style={navItemStyle(isCompanyOpen || activePage === 'privacy-policy' || activePage === 'terms-conditions' || activePage === 'refund-policy' || activePage === 'our-story')}
+              onMouseEnter={(e) => { e.currentTarget.style.color = '#125651'; }}
+              onMouseLeave={(e) => {
+                const active = isCompanyOpen || activePage === 'privacy-policy' || activePage === 'terms-conditions' || activePage === 'refund-policy' || activePage === 'our-story';
+                e.currentTarget.style.color = active ? '#125651' : '#334155';
+              }}
+            >
+              <span>Company</span>
+              <ChevronDown
+                size={14}
+                style={{
+                  transition: 'transform 0.2s ease',
+                  transform: isCompanyOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                  color: (isCompanyOpen || activePage === 'privacy-policy' || activePage === 'terms-conditions' || activePage === 'refund-policy' || activePage === 'our-story') ? '#125651' : '#64748b',
+                }}
+              />
+            </button>
+
+            {/* Dropdown Menu */}
+            {isCompanyOpen && (
+              <div
+                className="glass-panel"
+                style={{
+                  position: 'absolute',
+                  top: '100%',
+                  left: '-30px',
+                  width: '320px',
+                  padding: '12px',
+                  borderRadius: '16px',
+                  backgroundColor: 'rgba(255, 255, 255, 0.96)',
+                  backdropFilter: 'blur(16px)',
+                  boxShadow: '0 20px 40px -10px rgba(18, 86, 81, 0.16)',
+                  animation: 'fadeIn 0.2s ease',
+                  zIndex: 100,
+                }}
+              >
+                {companyList.map((item, idx) => (
+                  <a
+                    key={idx}
+                    href="#"
+                    onClick={(e) => { e.preventDefault(); setIsCompanyOpen(false); onNavigate?.(item.page, item.anchor); }}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'flex-start',
+                      gap: '12px',
+                      padding: '10px',
+                      borderRadius: '10px',
+                      textDecoration: 'none',
+                      color: 'inherit',
+                      transition: 'background 0.15s ease',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = '#f0fdfa';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'transparent';
+                    }}
+                  >
+                    <div
+                      style={{
+                        padding: '8px',
+                        borderRadius: '8px',
+                        background: '#e6f4f1',
+                        color: '#125651',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <item.icon size={16} />
+                    </div>
+                    <div>
+                      <div style={{ fontSize: '13px', fontWeight: '700', color: '#0f172a' }}>
+                        {item.title}
+                      </div>
+                      <div style={{ fontSize: '11px', color: '#64748b', marginTop: '2px' }}>
+                        {item.desc}
+                      </div>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* 3. Funding */}
+          <NavItem active={activePage === 'funding'} onClick={() => onNavigate?.('funding')}>
+            Funding
+          </NavItem>
+
+          {/* 4. Grants */}
+          <NavItem active={activePage === 'grants'} onClick={() => onNavigate?.('grants')}>
+            Grants
+          </NavItem>
+
+          {/* 5. Mentors with Dropdown */}
+          <div
+            style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}
+            onMouseEnter={() => setIsMentorsOpen(true)}
+            onMouseLeave={() => setIsMentorsOpen(false)}
+          >
+            <button
+              type="button"
+              onClick={() => onNavigate?.('mentors')}
+              style={navItemStyle(isMentorsOpen || activePage === 'mentors' || activePage === 'become-mentor')}
+              onMouseEnter={(e) => { e.currentTarget.style.color = '#125651'; }}
+              onMouseLeave={(e) => {
+                const active = isMentorsOpen || activePage === 'mentors' || activePage === 'become-mentor';
+                e.currentTarget.style.color = active ? '#125651' : '#334155';
+              }}
+            >
+              <span>Mentors</span>
+              <ChevronDown
+                size={14}
+                style={{
+                  transition: 'transform 0.2s ease',
+                  transform: isMentorsOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                  color: (isMentorsOpen || activePage === 'mentors' || activePage === 'become-mentor') ? '#125651' : '#64748b',
+                }}
+              />
+            </button>
+
+            {/* Dropdown Menu */}
+            {isMentorsOpen && (
+              <div
+                className="glass-panel"
+                style={{
+                  position: 'absolute',
+                  top: '100%',
+                  left: '-30px',
+                  width: '320px',
+                  padding: '12px',
+                  borderRadius: '16px',
+                  backgroundColor: 'rgba(255, 255, 255, 0.96)',
+                  backdropFilter: 'blur(16px)',
+                  boxShadow: '0 20px 40px -10px rgba(18, 86, 81, 0.16)',
+                  animation: 'fadeIn 0.2s ease',
+                  zIndex: 100,
+                }}
+              >
+                {mentorsList.map((item, idx) => (
+                  <a
+                    key={idx}
+                    href="#"
+                    onClick={(e) => { e.preventDefault(); setIsMentorsOpen(false); onNavigate?.(item.page); }}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'flex-start',
+                      gap: '12px',
+                      padding: '10px',
+                      borderRadius: '10px',
+                      textDecoration: 'none',
+                      color: 'inherit',
+                      transition: 'background 0.15s ease',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = '#f0fdfa';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'transparent';
+                    }}
+                  >
+                    <div
+                      style={{
+                        padding: '8px',
+                        borderRadius: '8px',
+                        background: '#e6f4f1',
+                        color: '#125651',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <item.icon size={16} />
+                    </div>
+                    <div>
+                      <div style={{ fontSize: '13px', fontWeight: '700', color: '#0f172a' }}>
+                        {item.title}
+                      </div>
+                      <div style={{ fontSize: '11px', color: '#64748b', marginTop: '2px' }}>
+                        {item.desc}
+                      </div>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* 6. Services with Dropdown */}
+          <div
+            style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}
             onMouseEnter={() => setIsServicesOpen(true)}
             onMouseLeave={() => setIsServicesOpen(false)}
           >
-            <a
-              href="#services"
-              onClick={(e) => { e.preventDefault(); onNavigate?.('services'); }}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '5px',
-                background: 'none',
-                border: 'none',
-                fontSize: '14.5px',
-                fontWeight: '600',
-                color: isServicesOpen ? '#125651' : '#334155',
-                cursor: 'pointer',
-                padding: '6px 0',
-                transition: 'color 0.2s ease',
-                fontFamily: 'inherit',
-                textDecoration: 'none',
+            <button
+              type="button"
+              onClick={() => onNavigate?.('services')}
+              style={navItemStyle(isServicesOpen || activePage === 'services' || activePage === 'resources')}
+              onMouseEnter={(e) => { e.currentTarget.style.color = '#125651'; }}
+              onMouseLeave={(e) => {
+                const active = isServicesOpen || activePage === 'services' || activePage === 'resources';
+                e.currentTarget.style.color = active ? '#125651' : '#334155';
               }}
             >
               <span>Services</span>
@@ -154,10 +373,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onGetStartedClick, onLoginClick,
                 style={{
                   transition: 'transform 0.2s ease',
                   transform: isServicesOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-                  color: '#64748b',
+                  color: (isServicesOpen || activePage === 'services' || activePage === 'resources') ? '#125651' : '#64748b',
                 }}
               />
-            </a>
+            </button>
 
             {/* Dropdown Menu */}
             {isServicesOpen && (
@@ -226,24 +445,18 @@ export const Navbar: React.FC<NavbarProps> = ({ onGetStartedClick, onLoginClick,
             )}
           </div>
 
-          <NavItem active={activePage === 'mentors'} onClick={() => onNavigate?.('mentors')}>
-            Mentors
+          {/* 7. Global Services */}
+          <NavItem active={activePage === 'global-services'} onClick={() => onNavigate?.('global-services')}>
+            Global Services
           </NavItem>
 
-          <NavItem active={activePage === 'programs'} onClick={() => onNavigate?.('programs')}>
-            Programs
-          </NavItem>
-
-          <NavItem active={activePage === 'resources'} onClick={() => onNavigate?.('resources')}>
-            Resources
-          </NavItem>
-
-          <NavItem active={activePage === 'about'} onClick={() => onNavigate?.('about')}>
-            About
+          {/* 8. Blog */}
+          <NavItem active={activePage === 'blog'} onClick={() => onNavigate?.('blog')}>
+            Blog
           </NavItem>
         </nav>
 
-        {/* Right Actions */}
+        {/* Right Actions — Contact only */}
         <div
           className="desktop-actions"
           style={{
@@ -253,33 +466,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onGetStartedClick, onLoginClick,
           }}
         >
           <button
-            onClick={onLoginClick}
-            style={{
-              background: 'none',
-              border: 'none',
-              fontSize: '14.5px',
-              fontWeight: '600',
-              color: '#1e293b',
-              cursor: 'pointer',
-              padding: '6px 10px',
-              transition: 'color 0.2s ease',
-              fontFamily: 'inherit',
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = '#125651')}
-            onMouseLeave={(e) => (e.currentTarget.style.color = '#1e293b')}
-          >
-            Log in
-          </button>
-
-          <button
-            onClick={onGetStartedClick}
+            onClick={() => onNavigate?.('contact')}
             className="btn-primary"
             style={{
               padding: '9px 20px',
               fontSize: '14px',
             }}
           >
-            <span>Get Started</span>
+            <span>Contact</span>
             <ArrowRight size={14} />
           </button>
         </div>
@@ -318,31 +512,40 @@ export const Navbar: React.FC<NavbarProps> = ({ onGetStartedClick, onLoginClick,
             boxShadow: '0 20px 40px -10px rgba(18, 86, 81, 0.16)',
           }}
         >
-          <a href="#services" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate?.('services'); }} style={{ textDecoration: 'none', color: '#1e293b', fontWeight: '600', fontSize: '15px' }}>Services</a>
-          <a href="#mentors" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate?.('mentors'); }} style={{ textDecoration: 'none', color: activePage === 'mentors' ? '#125651' : '#1e293b', fontWeight: '600', fontSize: '15px' }}>Mentors</a>
-          <a href="#programs" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate?.('programs'); }} style={{ textDecoration: 'none', color: activePage === 'programs' ? '#125651' : '#1e293b', fontWeight: '600', fontSize: '15px' }}>Programs</a>
-          <a href="#resources" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate?.('resources'); }} style={{ textDecoration: 'none', color: activePage === 'resources' ? '#125651' : '#1e293b', fontWeight: '600', fontSize: '15px' }}>Resources</a>
-          <a href="#about" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate?.('about'); }} style={{ textDecoration: 'none', color: activePage === 'about' ? '#125651' : '#1e293b', fontWeight: '600', fontSize: '15px' }}>About</a>
+          <a href="#about" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate?.('about'); }} style={{ textDecoration: 'none', color: activePage === 'about' ? '#125651' : '#1e293b', fontWeight: '600', fontSize: '15px' }}>About Us</a>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', paddingLeft: '12px', borderLeft: '2px solid #e6f4f1' }}>
+            <span style={{ fontSize: '12px', fontWeight: '700', letterSpacing: '1px', color: '#64748b' }}>COMPANY</span>
+            <a href="#our-story" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate?.('our-story'); }} style={{ textDecoration: 'none', color: '#1e293b', fontWeight: '600', fontSize: '14.5px' }}>Our Story</a>
+            <a href="#privacy-policy" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate?.('privacy-policy'); }} style={{ textDecoration: 'none', color: '#1e293b', fontWeight: '600', fontSize: '14.5px' }}>Privacy Policy</a>
+            <a href="#terms-conditions" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate?.('terms-conditions'); }} style={{ textDecoration: 'none', color: '#1e293b', fontWeight: '600', fontSize: '14.5px' }}>Terms & Conditions</a>
+            <a href="#refund-policy" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate?.('refund-policy'); }} style={{ textDecoration: 'none', color: '#1e293b', fontWeight: '600', fontSize: '14.5px' }}>Refund Policy</a>
+          </div>
+
+          <a href="#funding" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate?.('funding'); }} style={{ textDecoration: 'none', color: activePage === 'funding' ? '#125651' : '#1e293b', fontWeight: '600', fontSize: '15px' }}>Funding</a>
+          <a href="#grants" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate?.('grants'); }} style={{ textDecoration: 'none', color: activePage === 'grants' ? '#125651' : '#1e293b', fontWeight: '600', fontSize: '15px' }}>Grants</a>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', paddingLeft: '12px', borderLeft: '2px solid #e6f4f1' }}>
+            <span style={{ fontSize: '12px', fontWeight: '700', letterSpacing: '1px', color: '#64748b' }}>MENTORS</span>
+            <a href="#mentors" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate?.('mentors'); }} style={{ textDecoration: 'none', color: '#1e293b', fontWeight: '600', fontSize: '14.5px' }}>Browse Mentors</a>
+            <a href="#become-mentor" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate?.('become-mentor'); }} style={{ textDecoration: 'none', color: '#1e293b', fontWeight: '600', fontSize: '14.5px' }}>Become a Mentor</a>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', paddingLeft: '12px', borderLeft: '2px solid #e6f4f1' }}>
+            <span style={{ fontSize: '12px', fontWeight: '700', letterSpacing: '1px', color: '#64748b' }}>SERVICES</span>
+            <a href="#services" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate?.('services'); }} style={{ textDecoration: 'none', color: '#1e293b', fontWeight: '600', fontSize: '14.5px' }}>Services Overview</a>
+            <a href="#templates" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate?.('resources'); }} style={{ textDecoration: 'none', color: '#1e293b', fontWeight: '600', fontSize: '14.5px' }}>Templates & Resources</a>
+          </div>
+
+          <a href="#global-services" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate?.('global-services'); }} style={{ textDecoration: 'none', color: activePage === 'global-services' ? '#125651' : '#1e293b', fontWeight: '600', fontSize: '15px' }}>Global Services</a>
+          <a href="#blog" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate?.('blog'); }} style={{ textDecoration: 'none', color: activePage === 'blog' ? '#125651' : '#1e293b', fontWeight: '600', fontSize: '15px' }}>Blog</a>
           <hr style={{ borderColor: '#e2e8f0', borderStyle: 'solid', borderWidth: '0.5px' }} />
           <button
-            onClick={() => { setMobileMenuOpen(false); onLoginClick?.(); }}
-            style={{
-              padding: '10px',
-              borderRadius: '12px',
-              border: '1px solid #cbd5e1',
-              background: '#ffffff',
-              fontWeight: '600',
-              cursor: 'pointer',
-            }}
-          >
-            Log in
-          </button>
-          <button
-            onClick={() => { setMobileMenuOpen(false); onGetStartedClick?.(); }}
+            onClick={() => { setMobileMenuOpen(false); onNavigate?.('contact'); }}
             className="btn-primary"
             style={{ width: '100%', justifyContent: 'center' }}
           >
-            <span>Get Started</span>
+            <span>Contact</span>
             <ArrowRight size={15} />
           </button>
         </div>

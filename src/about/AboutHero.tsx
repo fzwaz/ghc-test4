@@ -139,7 +139,7 @@ export const AboutHero: React.FC = () => {
               <span style={{ color: '#0a0a0a' }}>future.</span>
             </h1>
             <p style={{ fontSize: '17px', color: '#5b6472', maxWidth: '560px', lineHeight: 1.65, marginBottom: '32px' }}>
-              GHC GrowthLab is a growth-focused consulting and investment banking firm helping startups, MSMEs, and enterprises raise capital, scale strategically, and build sustainable businesses.
+              GHC GrowthLab is a growth-focused consulting and investment banking firm committed to helping startups, MSMEs, and enterprises raise capital, scale strategically, and build sustainable businesses.
             </p>
             <div style={{ display: 'flex', gap: '28px', flexWrap: 'wrap' }}>
               {trustPoints.map((t, idx) => (

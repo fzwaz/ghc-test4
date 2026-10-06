@@ -19,15 +19,28 @@ import CustomCursor from './components/CustomCursor';
 import { AboutPage } from './pages/AboutPage';
 import { ServicesPage } from './pages/ServicesPage';
 import { MentorsPage } from './pages/MentorsPage';
-import { ProgramsPage } from './pages/ProgramsPage';
+import { BecomeMentorPage } from './pages/BecomeMentorPage';
+import { FundingPage } from './pages/FundingPage';
+import { GrantsPage } from './pages/GrantsPage';
+import { GlobalServicesPage } from './pages/GlobalServicesPage';
+import { GrantsSearchPage } from './pages/GrantsSearchPage';
+import { GrantsSourcesPage } from './pages/GrantsSourcesPage';
 import { ResourcesPage } from './pages/ResourcesPage';
+import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
+import { ContactPage } from './pages/ContactPage';
+import { BlogPage } from './pages/BlogPage';
+import { BlogDetailPage } from './pages/BlogDetailPage';
+import { BlogAdminPage } from './pages/BlogAdminPage';
+import { TermsConditionsPage } from './pages/TermsConditionsPage';
+import { RefundPolicyPage } from './pages/RefundPolicyPage';
+import { OurStoryPage } from './pages/OurStoryPage';
 import { useGsapScroll } from './utils/useGsapScroll';
 
 const pageToPath = (page: PageKey): string => (page === 'home' ? '/' : `/${page}`);
 
 const pathToPage = (pathname: string): PageKey => {
-  const seg = pathname.replace(/^\/+|\/+$/g, '');
-  const pages: PageKey[] = ['about', 'services', 'mentors', 'programs', 'resources'];
+  const seg = pathname.replace(/^\/+|\/+$/g, '').split('/')[0];
+  const pages: PageKey[] = ['about', 'services', 'mentors', 'become-mentor', 'funding', 'grants', 'global-services', 'blog', 'resources', 'contact', 'privacy-policy', 'terms-conditions', 'refund-policy', 'our-story'];
   return pages.includes(seg as PageKey) ? (seg as PageKey) : 'home';
 };
 
@@ -133,7 +146,6 @@ export const App: React.FC = () => {
       `}</style>
       {/* 1. Floating Fixed Navbar — always visible */}
       <Navbar
-        onGetStartedClick={handleGetStarted}
         onLoginClick={handleLogin}
         onNavigate={goPage}
         activePage={page}
@@ -188,7 +200,11 @@ export const App: React.FC = () => {
             <BecomeMentorSection onBecomeMentor={handleBecomeMentor} />
 
             {/* 11. Insights + newsletter */}
-            <InsightsSection onReadArticle={handleReadArticle} onReserveSeat={(title) => openTopic(`Event Seat: ${title}`)} />
+            <InsightsSection
+              onReadArticle={handleReadArticle}
+              onReserveSeat={(title) => openTopic(`Event Seat: ${title}`)}
+              showNewsletter={true}
+            />
 
             {/* 12. Closing CTA */}
             <CtaBanner />
@@ -199,8 +215,6 @@ export const App: React.FC = () => {
             onTalkToTeam={handleTalkToTeam}
             onGetFunded={handleGetFunded}
             onPartner={handlePartner}
-            onReadArticle={handleReadArticle}
-            onReserveSeat={(title) => openTopic(`Event Seat: ${title}`)}
           />
           } />
           <Route path="/services" element={
@@ -220,9 +234,32 @@ export const App: React.FC = () => {
             onReserveSeat={(title) => openTopic(`Event Seat: ${title}`)}
           />
           } />
-          <Route path="/programs" element={
-          <ProgramsPage
-            onSelectProgram={(name) => openTopic(`Program Application: ${name}`)}
+          <Route path="/become-mentor" element={
+          <BecomeMentorPage onContact={handleBecomeMentor} />
+          } />
+          <Route path="/funding" element={
+          <FundingPage
+            onApply={(name) => openTopic(`Funding Application: ${name}`)}
+            onGetFunded={handleGetFunded}
+            onReadArticle={handleReadArticle}
+            onReserveSeat={(title) => openTopic(`Event Seat: ${title}`)}
+          />
+          } />
+          <Route path="/grants" element={
+          <GrantsPage
+            onReadArticle={handleReadArticle}
+            onReserveSeat={(title) => openTopic(`Event Seat: ${title}`)}
+          />
+          } />
+          <Route path="/grants/search" element={
+          <GrantsSearchPage />
+          } />
+          <Route path="/grants/sources" element={
+          <GrantsSourcesPage />
+          } />
+          <Route path="/global-services" element={
+          <GlobalServicesPage
+            onSelectService={handleServiceClick}
             onReadArticle={handleReadArticle}
             onReserveSeat={(title) => openTopic(`Event Seat: ${title}`)}
           />
@@ -234,6 +271,21 @@ export const App: React.FC = () => {
             onReserveSeat={(title) => openTopic(`Event Seat: ${title}`)}
           />
           } />
+          <Route path="/privacy-policy" element={
+          <PrivacyPolicyPage />
+          } />
+          <Route path="/blog" element={
+          <BlogPage
+            onReadArticle={handleReadArticle}
+            onReserveSeat={(title) => openTopic(`Event Seat: ${title}`)}
+          />
+          } />
+          <Route path="/blog/admin" element={<BlogAdminPage />} />
+          <Route path="/blog/:slug" element={<BlogDetailPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/terms-conditions" element={<TermsConditionsPage />} />
+          <Route path="/refund-policy" element={<RefundPolicyPage />} />
+          <Route path="/our-story" element={<OurStoryPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>

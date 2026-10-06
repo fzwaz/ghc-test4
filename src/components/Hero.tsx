@@ -1,7 +1,6 @@
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
 import { RightHeroJourney } from './RightHeroJourney';
-import { StatsSection } from './StatsSection';
 
 interface HeroProps {
   onStartJourney?: () => void;
@@ -111,14 +110,14 @@ export const Hero: React.FC<HeroProps> = ({
               marginBottom: '18px',
             }}
           >
-            From Idea to a{' '}
+            Elevate Your{' '}
             <span
               style={{
                 display: 'block',
                 color: '#1b7a74',
               }}
             >
-              Business That Grows.
+              Startup Journey.
             </span>
           </h1>
 
@@ -133,7 +132,7 @@ export const Hero: React.FC<HeroProps> = ({
               maxWidth: '460px',
             }}
           >
-            GHC Growth Lab helps startup founders turn ideas into scalable businesses through expert mentorship, strategy, funding support and end-to-end growth advisory.
+            Empowering Startups with Strategic Funding Solutions daily to their Unique Needs turning Dreams into Successful Ventures.
           </p>
 
           {/* Action Buttons */}
@@ -154,7 +153,7 @@ export const Hero: React.FC<HeroProps> = ({
                 fontSize: '14.5px',
               }}
             >
-              <span>Start Your Growth Journey</span>
+              <span>Get Funded Now</span>
               <ArrowRight size={16} />
             </button>
 
@@ -171,7 +170,56 @@ export const Hero: React.FC<HeroProps> = ({
           </div>
 
           {/* Bottom Stats Row */}
-          <StatsSection />
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '40px',
+              marginTop: 'auto',
+              paddingTop: '20px',
+            }}
+          >
+            {[
+              { value: '1000+', label: 'Startup Consultations' },
+              { value: '300+', label: 'Business Valuations' },
+              { value: '100+', label: 'Funding' },
+            ].map((stat, idx, arr) => (
+              <React.Fragment key={idx}>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <span
+                    style={{
+                      fontSize: '28px',
+                      fontWeight: '800',
+                      color: '#111827',
+                      letterSpacing: '-0.5px',
+                      lineHeight: '1.1',
+                    }}
+                  >
+                    {stat.value}
+                  </span>
+                  <span
+                    style={{
+                      fontSize: '13px',
+                      fontWeight: '500',
+                      color: '#53626c',
+                      marginTop: '4px',
+                    }}
+                  >
+                    {stat.label}
+                  </span>
+                </div>
+                {idx < arr.length - 1 && (
+                  <div
+                    style={{
+                      width: '1px',
+                      height: '36px',
+                      backgroundColor: 'rgba(148, 163, 184, 0.3)',
+                    }}
+                  />
+                )}
+              </React.Fragment>
+            ))}
+          </div>
         </div>
 
         {/* Right Column: Exact Match Journey Canvas */}

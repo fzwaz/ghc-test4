@@ -87,7 +87,7 @@ export const useGsapScroll = (pageDependency?: any) => {
 
       // 4. Subtle scale entrance on booking forms & hero cards
       const floatingCards = document.querySelectorAll(
-        '.featured-event-card, form, .about-hero-grid > div:last-child, .services-hero-grid > div:last-child, .programs-hero-grid > div:last-child, .resources-hero-grid > div:last-child'
+        '.featured-event-card, form, .about-hero-grid > div:last-child, .services-hero-grid > div:last-child, .funding-hero-grid > div:last-child, .resources-hero-grid > div:last-child'
       );
 
       floatingCards.forEach((card) => {

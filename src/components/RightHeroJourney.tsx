@@ -1,6 +1,5 @@
 import React from 'react';
 import { Lightbulb, Box, Coins, BarChart3 } from 'lucide-react';
-import { MentorBadge } from './MentorBadge';
 
 interface RightHeroJourneyProps {
   onMilestoneClick: (title: string) => void;
@@ -9,7 +8,6 @@ interface RightHeroJourneyProps {
 
 export const RightHeroJourney: React.FC<RightHeroJourneyProps> = ({
   onMilestoneClick,
-  onMentorClick,
 }) => {
   return (
     <div
@@ -21,19 +19,7 @@ export const RightHeroJourney: React.FC<RightHeroJourneyProps> = ({
         userSelect: 'none',
       }}
     >
-      {/* 1. Top Mentor Badge */}
-      <div
-        style={{
-          position: 'absolute',
-          top: '12%',
-          left: '42%',
-          zIndex: 30,
-        }}
-      >
-        <MentorBadge onClick={onMentorClick} />
-      </div>
-
-      {/* 2. Handwritten Annotation & Swooping Arrow */}
+      {/* 1. Handwritten Annotation & Swooping Arrow */}
       <div
         style={{
           position: 'absolute',
@@ -89,7 +75,7 @@ export const RightHeroJourney: React.FC<RightHeroJourneyProps> = ({
         </svg>
       </div>
 
-      {/* 3. SVG Growth Line with Gradient, Nodes & Vertical Dotted Connectors */}
+      {/* 2. SVG Growth Line with Gradient, Nodes & Vertical Dotted Connectors */}
       <svg
         style={{
           position: 'absolute',
@@ -176,7 +162,7 @@ export const RightHeroJourney: React.FC<RightHeroJourneyProps> = ({
         <circle cx="705" cy="295" r="2.5" fill="#ffffff" />
       </svg>
 
-      {/* 4. The 4 Milestone Cards (More Compact, Shifted Right) */}
+      {/* 3. The 4 Milestone Cards (More Compact, Shifted Right) */}
       {/* Card 1: Idea */}
       <div
         onClick={() => onMilestoneClick('Idea')}
@@ -305,7 +291,7 @@ export const RightHeroJourney: React.FC<RightHeroJourneyProps> = ({
         </p>
       </div>
 
-      {/* 5. Stone Ledge Quote */}
+      {/* 4. Stone Ledge Quote */}
       <div
         style={{
           position: 'absolute',
