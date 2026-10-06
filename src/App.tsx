@@ -15,6 +15,7 @@ import { InsightsSection } from './components/InsightsSection';
 import { CtaBanner } from './components/CtaBanner';
 import { Footer } from './components/Footer';
 import { ContactModal } from './components/ContactModal';
+import { AllEventsModal } from './components/AllEventsModal';
 import CustomCursor from './components/CustomCursor';
 import { AboutPage } from './pages/AboutPage';
 import { ServicesPage } from './pages/ServicesPage';
@@ -50,6 +51,7 @@ export const App: React.FC = () => {
   const page = pathToPage(location.pathname);
   const mainContainerRef = useGsapScroll(page);
   const [modalOpen, setModalOpen] = useState(false);
+  const [eventsModalOpen, setEventsModalOpen] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
   const [modalTopic, setModalTopic] = useState('Growth Advisory');
   const [inHero, setInHero] = useState(false);
@@ -165,6 +167,7 @@ export const App: React.FC = () => {
             {/* What's Next Events Section */}
             <WhatsNext
               onRegisterEvent={(eventTitle) => openTopic(`Event Registration: ${eventTitle}`)}
+              onViewAllEvents={() => setEventsModalOpen(true)}
             />
 
             {/* 3. How We Help Orbital Section */}
@@ -298,6 +301,16 @@ export const App: React.FC = () => {
         onClose={() => setModalOpen(false)}
         isLogin={isLogin}
         defaultTopic={modalTopic}
+      />
+
+      {/* 15. Global All Events Modal */}
+      <AllEventsModal
+        isOpen={eventsModalOpen}
+        onClose={() => setEventsModalOpen(false)}
+        onRegisterEvent={(title) => {
+          setEventsModalOpen(false);
+          openTopic(`Event Registration: ${title}`);
+        }}
       />
     </div>
   );

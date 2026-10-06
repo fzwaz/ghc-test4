@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ArrowRight, ShieldCheck, Clock, TrendingUp, Sparkles, Lock, CheckCircle2, ChevronDown } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { submitLead } from '../lib/leads';
 
 const stats = [
   { icon: ShieldCheck, value: '1000+', label: 'Consultations Done' },
@@ -18,9 +19,22 @@ export const CtaBanner: React.FC = () => {
   const [startup, setStartup] = useState('');
   const [idea, setIdea] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitting(true);
+    await submitLead({
+      name,
+      email,
+      phone,
+      stage: stage || undefined,
+      startup: startup || undefined,
+      idea: idea || undefined,
+      topic: 'Closing CTA',
+      page: window.location.pathname,
+    });
+    setSubmitting(false);
     setSubmitted(true);
     confetti({
       particleCount: 90,
@@ -286,6 +300,7 @@ export const CtaBanner: React.FC = () => {
 
                 <button
                   type="submit"
+                  disabled={submitting}
                   style={{
                     width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px',
                     backgroundColor: '#2dd4bf', color: '#052e22',
@@ -293,11 +308,12 @@ export const CtaBanner: React.FC = () => {
                     borderRadius: '9999px', border: 'none', cursor: 'pointer',
                     boxShadow: '0 0 0 1px rgba(45,212,191,0.5), 0 14px 44px -6px rgba(45,212,191,0.55)',
                     transition: 'all 0.2s ease',
+                    opacity: submitting ? 0.7 : 1,
                   }}
                   onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#14b8a6'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
                   onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#2dd4bf'; e.currentTarget.style.transform = 'translateY(0)'; }}
                 >
-                  <span>Submit & Connect</span>
+                  <span>{submitting ? 'Sending...' : 'Submit & Connect'}</span>
                   <ArrowRight size={18} strokeWidth={2.5} />
                 </button>
               </form>

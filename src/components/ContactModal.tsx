@@ -295,10 +295,15 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                 </select>
               </div>
 
-              <button type="submit" className="btn-primary" style={{ marginTop: '10px', width: '100%' }}>
-                <span>Schedule Growth Consultation</span>
+              <button type="submit" disabled={submitting} className="btn-primary" style={{ marginTop: '10px', width: '100%', opacity: submitting ? 0.7 : 1 }}>
+                <span>{submitting ? 'Sending...' : 'Schedule Growth Consultation'}</span>
                 <Send size={16} />
               </button>
+              {submitError ? (
+                <p style={{ fontSize: '12px', color: '#b45309', backgroundColor: '#fef3c7', borderRadius: '8px', padding: '8px 12px' }}>
+                  Saved locally, CRM sync issue: {submitError}
+                </p>
+              ) : null}
             </form>
           </div>
         )}

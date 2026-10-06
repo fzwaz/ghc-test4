@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ArrowRight, ArrowLeft, ShieldCheck, CheckCircle2, Gauge } from 'lucide-react';
+import { submitLead } from '../lib/leads';
 
 interface OptionQuestion {
   kind: 'single';
@@ -165,16 +166,27 @@ export const ContactPage: React.FC = () => {
     return form.name.trim() !== '' && form.email.trim() !== '';
   };
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
     if (q.kind === 'form') {
       if (!form.name.trim() || !form.email.trim()) {
         setFormError('Please share at least your name and email so we can reach you.');
         return;
       }
       setFormError('');
-      const payload = { answers, contact: form, at: new Date().toISOString() };
+      await submitLead({
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        company: form.company,
+        message: form.message,
+        contactVia: form.contactVia,
+        answers,
+        topic: 'Contact Quiz',
+        page: window.location.pathname,
+      });
       try {
         const existing = JSON.parse(localStorage.getItem('ghc_contact_submissions') || '[]');
+        const payload = { answers, contact: form, at: new Date().toISOString() };
         existing.push(payload);
         localStorage.setItem('ghc_contact_submissions', JSON.stringify(existing));
       } catch { /* storage unavailable */ }

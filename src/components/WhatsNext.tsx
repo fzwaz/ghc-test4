@@ -223,6 +223,7 @@ export const WhatsNext: React.FC<WhatsNextProps> = ({
                   justifyContent: 'space-between',
                   boxShadow: '0 12px 32px -4px rgba(18, 86, 81, 0.06), 0 4px 12px -2px rgba(0, 0, 0, 0.03)',
                   overflow: 'hidden',
+                  minHeight: '440px',
                 }}
               >
                 {/* Background Decorative Rings in Bottom Right */}
@@ -557,42 +558,188 @@ export const WhatsNext: React.FC<WhatsNextProps> = ({
                 </div>
               </div>
             ) : (
-              /* Fallback Featured Card */
+              /* Fallback Featured Card (Matches empty state design) */
               <div
                 style={{
                   position: 'relative',
                   backgroundColor: '#ffffff',
                   borderRadius: '24px',
-                  border: '1.5px dashed #d1e3dd',
-                  padding: '48px 36px',
+                  border: '1.5px solid #ddede8',
+                  padding: '32px 36px 36px 36px',
                   display: 'flex',
                   flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  textAlign: 'center',
-                  gap: '14px',
+                  justifyContent: 'space-between',
+                  boxShadow: '0 12px 32px -4px rgba(18, 86, 81, 0.04), 0 4px 12px -2px rgba(0, 0, 0, 0.02)',
+                  overflow: 'hidden',
+                  minHeight: '440px',
                 }}
               >
+                {/* Background Decorative Rings in Bottom Left */}
                 <div
                   style={{
-                    width: '52px',
-                    height: '52px',
-                    borderRadius: '50%',
-                    backgroundColor: '#e6f7f0',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: '#0e574c',
+                    position: 'absolute',
+                    left: '-60px',
+                    bottom: '-60px',
+                    width: '240px',
+                    height: '240px',
+                    pointerEvents: 'none',
+                    zIndex: 0,
                   }}
                 >
-                  <Sparkles size={24} />
+                  <svg width="100%" height="100%" viewBox="0 0 240 240" fill="none">
+                    <circle cx="40" cy="200" r="180" stroke="#dcfce7" strokeWidth="28" opacity="0.55" />
+                    <circle cx="40" cy="200" r="120" stroke="#ecfdf5" strokeWidth="22" opacity="0.8" />
+                    <circle cx="40" cy="200" r="70" fill="#d1fae5" fillOpacity="0.5" />
+                  </svg>
                 </div>
-                <h3 style={{ fontSize: '20px', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-                  Featured Event Coming Soon
-                </h3>
-                <p style={{ fontSize: '14px', color: '#64748b', maxWidth: '340px', lineHeight: 1.6, margin: 0 }}>
-                  Our team is curating the next flagship masterclass. Stay tuned for dates and speaker announcements.
-                </p>
+
+                {/* Top Header Badges */}
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    position: 'relative',
+                    zIndex: 2,
+                  }}
+                >
+                  <div
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '7px',
+                      backgroundColor: '#e6f7f0',
+                      border: '1px solid #d1fae5',
+                      padding: '5px 14px',
+                      borderRadius: '9999px',
+                    }}
+                  >
+                    <span
+                      style={{
+                        width: '7px',
+                        height: '7px',
+                        borderRadius: '50%',
+                        backgroundColor: '#10b981',
+                        display: 'inline-block',
+                      }}
+                    />
+                    <span
+                      style={{
+                        fontSize: '12px',
+                        fontWeight: 600,
+                        color: '#065f46',
+                      }}
+                    >
+                      Featured Event
+                    </span>
+                  </div>
+
+                  <div
+                    style={{
+                      backgroundColor: '#f1f5f9',
+                      padding: '4px 14px',
+                      borderRadius: '9999px',
+                      fontSize: '12px',
+                      fontWeight: 500,
+                      color: '#64748b',
+                    }}
+                  >
+                    Stay Tuned
+                  </div>
+                </div>
+
+                {/* Center Graphic & Text */}
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    textAlign: 'center',
+                    padding: '24px 0',
+                    position: 'relative',
+                    zIndex: 2,
+                    flex: 1,
+                  }}
+                >
+                  {/* Calendar with Clock Illustration */}
+                  <div
+                    style={{
+                      position: 'relative',
+                      width: '136px',
+                      height: '136px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginBottom: '16px',
+                    }}
+                  >
+                    {/* Soft mint circular glow */}
+                    <div
+                      style={{
+                        position: 'absolute',
+                        inset: '12px',
+                        borderRadius: '50%',
+                        backgroundColor: '#e6f7f0',
+                      }}
+                    />
+
+                    {/* Sparkles around calendar */}
+                    <svg
+                      style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }}
+                      viewBox="0 0 136 136"
+                      fill="none"
+                    >
+                      {/* Left sparkle */}
+                      <path d="M 22 56 Q 26 56 26 52 Q 26 56 30 56 Q 26 56 26 60 Q 26 56 22 56 Z" fill="#0d9488" />
+                      <circle cx="34" cy="44" r="1.5" fill="#0d9488" />
+                      {/* Right sparkle */}
+                      <path d="M 112 40 Q 116 40 116 36 Q 116 40 120 40 Q 116 40 116 44 Q 116 40 112 40 Z" fill="#0d9488" />
+                      <circle cx="104" cy="30" r="1.5" fill="#0d9488" />
+                    </svg>
+
+                    {/* Calendar + Clock vector */}
+                    <svg width="80" height="80" viewBox="0 0 80 80" fill="none" style={{ position: 'relative', zIndex: 2 }}>
+                      {/* Calendar Body */}
+                      <rect x="14" y="18" width="48" height="44" rx="10" fill="#ffffff" stroke="#1e3e3b" strokeWidth="2.2" />
+                      <line x1="14" y1="30" x2="62" y2="30" stroke="#1e3e3b" strokeWidth="2" strokeLinecap="round" />
+                      {/* Rings on top */}
+                      <line x1="26" y1="12" x2="26" y2="20" stroke="#1e3e3b" strokeWidth="2.4" strokeLinecap="round" />
+                      <line x1="50" y1="12" x2="50" y2="20" stroke="#1e3e3b" strokeWidth="2.4" strokeLinecap="round" />
+                      {/* Clock overlapping bottom right */}
+                      <circle cx="56" cy="54" r="14" fill="#ffffff" stroke="#1e3e3b" strokeWidth="2.2" />
+                      <path d="M 56 46 V 54 H 61" stroke="#1e3e3b" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </div>
+
+                  <h3
+                    style={{
+                      fontSize: '19.5px',
+                      fontWeight: 800,
+                      color: '#0f172a',
+                      letterSpacing: '-0.015em',
+                      marginBottom: '8px',
+                      marginTop: 0,
+                    }}
+                  >
+                    No featured event at the moment
+                  </h3>
+
+                  <p
+                    style={{
+                      fontSize: '13.5px',
+                      color: '#64748b',
+                      lineHeight: 1.55,
+                      maxWidth: '380px',
+                      margin: 0,
+                    }}
+                  >
+                    We're curating exciting sessions, workshops and discussions for founders and businesses. Stay tuned for updates.
+                  </p>
+                </div>
+
+                {/* Bottom empty spacing to match flex layout */}
+                <div style={{ height: '6px' }} />
               </div>
             )}
 
@@ -626,7 +773,13 @@ export const WhatsNext: React.FC<WhatsNextProps> = ({
                   More Upcoming Events
                 </h3>
                 <button
-                  onClick={() => setIsAllEventsOpen(true)}
+                  onClick={() => {
+                    if (onViewAllEvents) {
+                      onViewAllEvents();
+                    } else {
+                      setIsAllEventsOpen(true);
+                    }
+                  }}
                   style={{
                     display: 'inline-flex',
                     alignItems: 'center',
@@ -835,40 +988,132 @@ export const WhatsNext: React.FC<WhatsNextProps> = ({
                     );
                   })
                 ) : (
-                  /* Placeholder when no additional events exist */
+                  /* Placeholder when no additional events exist (Matches empty state design) */
                   <div
                     style={{
+                      position: 'relative',
                       backgroundColor: '#ffffff',
-                      borderRadius: '16px',
-                      border: '1.5px dashed #d1e3dd',
-                      padding: '38px 24px',
-                      textAlign: 'center',
+                      borderRadius: '24px',
+                      border: '1.5px solid #ddede8',
+                      padding: '40px 36px',
+                      minHeight: '388px',
                       display: 'flex',
                       flexDirection: 'column',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      gap: '10px',
+                      textAlign: 'center',
+                      overflow: 'hidden',
+                      boxShadow: '0 12px 32px -4px rgba(18, 86, 81, 0.04), 0 4px 12px -2px rgba(0, 0, 0, 0.02)',
                     }}
                   >
+                    {/* Decorative Dot Grid in Bottom Right */}
                     <div
                       style={{
-                        width: '42px',
-                        height: '42px',
-                        borderRadius: '50%',
-                        backgroundColor: '#e6f4f1',
+                        position: 'absolute',
+                        right: '32px',
+                        bottom: '30px',
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(4, 5px)',
+                        gap: '14px',
+                        pointerEvents: 'none',
+                        opacity: 0.5,
+                      }}
+                    >
+                      {Array.from({ length: 12 }).map((_, i) => (
+                        <span
+                          key={i}
+                          style={{
+                            width: '5px',
+                            height: '5px',
+                            borderRadius: '50%',
+                            backgroundColor: '#94a3b8',
+                            display: 'inline-block',
+                          }}
+                        />
+                      ))}
+                    </div>
+
+                    {/* Stacked Cards Illustration */}
+                    <div
+                      style={{
+                        position: 'relative',
+                        width: '136px',
+                        height: '136px',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        color: '#0e574c',
+                        marginBottom: '16px',
+                        zIndex: 2,
                       }}
                     >
-                      <Calendar size={20} />
+                      {/* Soft mint circular glow */}
+                      <div
+                        style={{
+                          position: 'absolute',
+                          inset: '12px',
+                          borderRadius: '50%',
+                          backgroundColor: '#e6f7f0',
+                        }}
+                      />
+
+                      {/* Sparkles around cards */}
+                      <svg
+                        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }}
+                        viewBox="0 0 136 136"
+                        fill="none"
+                      >
+                        {/* Left sparkle */}
+                        <path d="M 22 52 Q 26 52 26 48 Q 26 52 30 52 Q 26 52 26 56 Q 26 52 22 52 Z" fill="#0d9488" />
+                        <circle cx="34" cy="42" r="1.5" fill="#0d9488" />
+                        {/* Right sparkle */}
+                        <path d="M 110 40 Q 114 40 114 36 Q 114 40 118 40 Q 114 40 114 44 Q 114 40 110 40 Z" fill="#0d9488" />
+                        <circle cx="102" cy="30" r="1.5" fill="#0d9488" />
+                      </svg>
+
+                      {/* Stacked Cards Vector */}
+                      <svg width="90" height="82" viewBox="0 0 90 82" fill="none" style={{ position: 'relative', zIndex: 2 }}>
+                        {/* Back card 3 */}
+                        <rect x="26" y="10" width="52" height="40" rx="9" fill="#ffffff" stroke="#1e3e3b" strokeWidth="2" opacity="0.45" />
+                        {/* Middle card 2 */}
+                        <rect x="20" y="17" width="52" height="40" rx="9" fill="#ffffff" stroke="#1e3e3b" strokeWidth="2" opacity="0.75" />
+                        {/* Front card 1 */}
+                        <rect x="14" y="24" width="54" height="44" rx="9" fill="#ffffff" stroke="#1e3e3b" strokeWidth="2.2" />
+                        {/* Mini calendar on front card */}
+                        <rect x="22" y="33" width="13" height="13" rx="3" stroke="#0d9488" strokeWidth="1.8" />
+                        <line x1="22" y1="37" x2="35" y2="37" stroke="#0d9488" strokeWidth="1.6" />
+                        {/* Horizontal placeholder bars */}
+                        <rect x="40" y="35" width="20" height="3.5" rx="1.75" fill="#cbd5e1" />
+                        <rect x="40" y="42" width="14" height="3" rx="1.5" fill="#e2e8f0" />
+                      </svg>
                     </div>
-                    <div style={{ fontSize: '15px', fontWeight: 700, color: '#0f172a' }}>
-                      More events will be updated in the future
-                    </div>
-                    <p style={{ fontSize: '13px', color: '#64748b', margin: 0, maxWidth: '340px', lineHeight: 1.5 }}>
-                      Stay tuned for upcoming founder sessions, roundtables, and workshops.
+
+                    <h3
+                      style={{
+                        fontSize: '19.5px',
+                        fontWeight: 800,
+                        color: '#0f172a',
+                        letterSpacing: '-0.015em',
+                        marginBottom: '8px',
+                        marginTop: 0,
+                        position: 'relative',
+                        zIndex: 2,
+                      }}
+                    >
+                      No upcoming events yet
+                    </h3>
+
+                    <p
+                      style={{
+                        fontSize: '13.5px',
+                        color: '#64748b',
+                        lineHeight: 1.55,
+                        maxWidth: '380px',
+                        margin: 0,
+                        position: 'relative',
+                        zIndex: 2,
+                      }}
+                    >
+                      We're working on bringing more valuable sessions, workshops and discussions soon.
                     </p>
                   </div>
                 )}

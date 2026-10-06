@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { X, Calendar, Clock, MapPin, Video, User, Ticket, ArrowRight, Sparkles, CheckCircle2 } from 'lucide-react';
 import { events as seedEvents, type GhcEvent } from '../data/events';
 import { fetchAllEvents } from '../lib/sanity';
@@ -80,13 +81,18 @@ export const AllEventsModal: React.FC<AllEventsModalProps> = ({
     };
   }, [isOpen]);
 
-  // Handle escape key
+  // Handle escape key and lock body scroll
   useEffect(() => {
+    if (!isOpen) return;
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isOpen) onClose();
+      if (e.key === 'Escape') onClose();
     };
+    document.body.style.overflow = 'hidden';
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = '';
+      window.removeEventListener('keydown', handleKeyDown);
+    };
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;
@@ -96,7 +102,7 @@ export const AllEventsModal: React.FC<AllEventsModalProps> = ({
     return e.status === filter;
   });
 
-  return (
+  return createPortal(
     <div
       style={{
         position: 'fixed',
@@ -104,7 +110,7 @@ export const AllEventsModal: React.FC<AllEventsModalProps> = ({
         backgroundColor: 'rgba(11, 29, 40, 0.65)',
         backdropFilter: 'blur(10px)',
         WebkitBackdropFilter: 'blur(10px)',
-        zIndex: 999,
+        zIndex: 9999,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
