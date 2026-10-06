@@ -165,7 +165,6 @@ export const App: React.FC = () => {
             {/* What's Next Events Section */}
             <WhatsNext
               onRegisterEvent={(eventTitle) => openTopic(`Event Registration: ${eventTitle}`)}
-              onViewAllEvents={() => openTopic('All Upcoming Events Schedule')}
             />
 
             {/* 3. How We Help Orbital Section */}

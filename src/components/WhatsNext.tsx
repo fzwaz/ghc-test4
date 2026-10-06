@@ -626,10 +626,7 @@ export const WhatsNext: React.FC<WhatsNextProps> = ({
                   More Upcoming Events
                 </h3>
                 <button
-                  onClick={() => {
-                    setIsAllEventsOpen(true);
-                    onViewAllEvents?.();
-                  }}
+                  onClick={() => setIsAllEventsOpen(true)}
                   style={{
                     display: 'inline-flex',
                     alignItems: 'center',

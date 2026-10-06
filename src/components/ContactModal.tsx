@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, CheckCircle2, Sparkles, Send, ArrowRight } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { submitLead } from '../lib/leads';
 
 interface ContactModalProps {
   isOpen: boolean;
@@ -19,17 +20,37 @@ export const ContactModal: React.FC<ContactModalProps> = ({
   const [email, setEmail] = useState('');
   const [stage, setStage] = useState('Idea Stage');
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   // Reset success state whenever a fresh modal is opened or the topic/mode changes,
   // otherwise a previous submission persists across different CTA entry points.
   useEffect(() => {
     if (isOpen) {
       setSubmitted(false);
+      setSubmitError('');
     }
   }, [isOpen, defaultTopic, isLogin]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isLogin) {
+      // Login is UI-only for now — not a CRM lead
+      setSubmitted(true);
+      return;
+    }
+    setSubmitting(true);
+    setSubmitError('');
+    const result = await submitLead({
+      name,
+      email,
+      stage,
+      topic: defaultTopic,
+      page: window.location.pathname,
+    });
+    setSubmitting(false);
+    if (!result.ok) setSubmitError(result.error);
+    // Always show success — dummy mode stores locally, zoho-fail keeps a local copy
     setSubmitted(true);
     confetti({
       particleCount: 80,
