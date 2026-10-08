@@ -20,9 +20,35 @@ const companyNames = [
   'Rootflo', 'SuperBryn',
 ];
 
+const logoFor = (file: string) => `/logos/clients/${file}`;
+
+// All 20 client logos local (URL-safe filenames in public/logos/clients).
+const logoMap: Record<string, string> = {
+  'Varsya': logoFor('varsya.jpg'),
+  'WebCRS': logoFor('webcrs.jpg'),
+  'FemiSafe': logoFor('femisafe.png'),
+  'NaturUp': logoFor('naturup.png'),
+  'Agua': logoFor('agua.png'),
+  "BHOOSHAN's Junior": logoFor('bhooshans-junior.png'),
+  'Apothecary': logoFor('apothecare.png'),
+  'Tutar': logoFor('tutar.png'),
+  'Manetain': logoFor('manetain.png'),
+  'INTERVAL': logoFor('interval.png'),
+  'Aifer': logoFor('aifer.png'),
+  'Carbon & Whale': logoFor('carbon-whale.png'),
+  'Eduport': logoFor('eduport.jpg'),
+  'Elance': logoFor('elance.jpg'),
+  'Jezt Tech': logoFor('jezt-tech.jpg'),
+  'Medecro AI': logoFor('medecro-ai.jpg'),
+  'Rail Rolls': logoFor('rail-rolls.jpg'),
+  'Risknox AI': logoFor('risknox-ai.avif'),
+  'Rootflo': logoFor('rootflo.jpg'),
+  'SuperBryn': logoFor('superbryn.jpg'),
+};
+
 const companies: Company[] = companyNames.map((name, idx) => ({
   name,
-  logo: undefined,
+  logo: logoMap[name],
   color: placeholderPalette[idx % placeholderPalette.length],
 }));
 
@@ -30,6 +56,19 @@ function placeholderInitial(name: string) {
   const clean = name.replace(/[^A-Za-z0-9 ]/g, '').trim();
   return clean ? clean[0].toUpperCase() : '?';
 }
+
+// Square solid-background marks — zoom to fill the circle (cover) instead of
+// small contain, so no white ring shows inside the icon.
+const fillLogos = new Set([
+  'Rail Rolls',
+  'Rootflo',
+  'NaturUp',
+  'Tutar',
+  'Manetain',
+  'Carbon & Whale',
+  'Eduport',
+  'FemiSafe',
+]);
 
 function renderCard(c: Company, idx: number, dark: boolean) {
   return (
@@ -55,16 +94,19 @@ function renderCard(c: Company, idx: number, dark: boolean) {
       <span
         style={{
           width: '88px', height: '88px', borderRadius: '50%',
-          backgroundColor: c.color, color: '#ffffff',
+          backgroundColor: c.logo ? '#ffffff' : c.color, color: '#ffffff',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           overflow: 'hidden', flexShrink: 0,
+          border: c.logo ? '1px solid #e8e8e8' : 'none',
         }}
       >
         {c.logo ? (
           <img
             src={c.logo}
             alt={`${c.name} logo`}
-            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+            style={fillLogos.has(c.name)
+              ? { width: '100%', height: '100%', objectFit: 'cover', display: 'block' }
+              : { maxWidth: '62%', maxHeight: '62%', width: 'auto', height: 'auto', objectFit: 'contain', display: 'block' }}
           />
         ) : (
           <span style={{ fontSize: '36px', fontWeight: 800, lineHeight: 1 }}>

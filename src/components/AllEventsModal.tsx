@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { X, Calendar, Clock, MapPin, Video, User, Ticket, ArrowRight, Sparkles, CheckCircle2 } from 'lucide-react';
+import { X, Calendar, Clock, MapPin, Video, User, ArrowRight, Sparkles } from 'lucide-react';
 import { events as seedEvents, type GhcEvent } from '../data/events';
 import { fetchAllEvents } from '../lib/sanity';
 
@@ -529,6 +529,7 @@ export const AllEventsModal: React.FC<AllEventsModalProps> = ({
           }
         }
       `}</style>
-    </div>
+    </div>,
+    typeof document !== 'undefined' ? document.body : (null as unknown as Element)
   );
 };

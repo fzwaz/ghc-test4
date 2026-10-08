@@ -4,27 +4,27 @@ import { Quote, Star } from 'lucide-react';
 const testimonials = [
   {
     quote: 'Thank you so much, Team GHC Growth Lab and CS Manu Francis. Your guidance and support has been incredibly valuable in helping us lay a strong financial foundation during these early stages. It\u2019s rare to find partners who are this committed to helping startups navigate with clarity and confidence.',
-    name: 'Vivek Chandran', role: 'Founder & CEO, Risknox.ai',
+    name: 'Vivek Chandran', role: 'Founder & CEO, Risknox.ai', photo: '/img/client_0.jpg',
   },
   {
     quote: 'Heartfelt thanks to CS Manu Francis and the entire team at GHC Growth Lab for all the assistance and support! Big thanks for prompt support throughout!',
-    name: 'Naseef Nazar', role: 'Cofounder, Femisafe',
+    name: 'Naseef Nazar', role: 'Cofounder, Femisafe', photo: '/img/client_1.jpg',
   },
   {
     quote: 'Thank you, CS Manu Francis and GHC Growth Lab, for invaluable support in securing the scale-up seed fund for NaturUp India. Thanks to your tireless efforts and strategic guidance, we secured the capital to propel our venture to new heights.',
-    name: 'Antony Pathadan', role: 'Cofounder, NaturUp',
+    name: 'Antony Pathadan', role: 'Cofounder, NaturUp', photo: '/img/client_2.jpg',
   },
   {
     quote: 'Thank you so much, team GHC Growth Lab and CS Manu Francis for sharing Bhooshan\u2019s JR exciting news and for your heartfelt congratulations!',
-    name: 'Sarath Bhooshan', role: 'Founder & CEO, Bhooshan\u2019s Junior',
+    name: 'Sarath Bhooshan', role: 'Founder & CEO, Bhooshan\u2019s Junior', photo: '/img/client_3.jpg',
   },
   {
     quote: 'Thank you so much, team GHC Growth Lab, for being a part of this milestone! Your support in navigating our startup valuation and funding journey has been truly instrumental. Grateful to partner with a team that believes in empowering early-stage founders.',
-    name: 'Shibin', role: 'CEO, Rail Rolls',
+    name: 'Shibin', role: 'CEO, Rail Rolls', photo: '/img/client_4.jpg',
   },
   {
     quote: 'A sincere thank you to the entire team at GHC Growth Lab for unwavering support in guiding us through fundraising and compliance. Deep gratitude to CS Manu Francis for his personal involvement and dedicated assistance.',
-    name: 'Navneet', role: 'Cofounder, Medecro AI',
+    name: 'Navneet', role: 'Cofounder, Medecro AI', photo: '/img/client_5.jpg',
   },
 ];
 
@@ -73,9 +73,17 @@ export const TestimonialsSection: React.FC = () => {
                 <p style={{ fontSize: '14px', color: '#334155', lineHeight: 1.65, marginBottom: '24px' }}>"{t.quote}"</p>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', borderTop: '1px solid #e2e8f0', paddingTop: '18px' }}>
-                <div style={{ width: '44px', height: '44px', borderRadius: '50%', background: 'radial-gradient(circle at 35% 30%, #177a72 0%, #115651 55%, #073834 100%)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '13px', border: '2px solid #ccfbf1', flexShrink: 0 }}>
-                  {initials(t.name)}
-                </div>
+                {(t as { photo?: string }).photo ? (
+                  <img
+                    src={(t as { photo?: string }).photo}
+                    alt={t.name}
+                    style={{ width: '44px', height: '44px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #ccfbf1', flexShrink: 0 }}
+                  />
+                ) : (
+                  <div style={{ width: '44px', height: '44px', borderRadius: '50%', background: 'radial-gradient(circle at 35% 30%, #177a72 0%, #115651 55%, #073834 100%)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '13px', border: '2px solid #ccfbf1', flexShrink: 0 }}>
+                    {initials(t.name)}
+                  </div>
+                )}
                 <div>
                   <h4 style={{ fontSize: '14.5px', fontWeight: 800, color: '#0f172a' }}>{t.name}</h4>
                   <p style={{ fontSize: '12px', color: '#64748b' }}>{t.role}</p>
